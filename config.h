@@ -10,3 +10,10 @@
 
 //define SCANSHIFT_INTERVAL     10
 //define DEBOUNCE_USEC          500
+
+//////////////////////////////////////////////////////////////////////////////
+// for ledarray.c
+
+#define LEDARRAY_NUM    56
+#define LEDARRAY_PIN    9
+#define LEDARRAY_PIO	pio0

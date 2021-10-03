@@ -17,8 +17,10 @@ pico_sdk_init()
 
 add_executable(yuiop60pi
 	main.c
-	matrix.c
 	onboard_led.c
+	matrix.c
+	backlight.c
+	ledarray.c
 	)
 
 # Link Time Optimization is not supported yet.
@@ -37,6 +39,7 @@ target_include_directories(yuiop60pi PRIVATE
 target_link_libraries(yuiop60pi
 	pico_stdlib
 	hardware_pio
+	hardware_dma
 	#tinyusb_device
 	#tinyusb_board
 	)

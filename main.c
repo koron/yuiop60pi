@@ -15,27 +15,12 @@
 //
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request.
-__attribute__((weak)) uint16_t hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
-    printf("hid_get_report_cb(weak stub): instance=%d id=%d type=%d buf=%p len=%d\n", instance, report_id, report_type, buffer, reqlen);
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
+    printf("unhandle HID get report: instance=%d id=%d type=%d buf=%p len=%d\n", instance, report_id, report_type, buffer, reqlen);
     return 0;
 }
 
-uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
-    return hid_get_report_cb(instance, report_id, report_type, buffer, reqlen);
-}
-
-// Invoked when received SET_REPORT control request or received data on OUT
-// endpoint ( Report ID = 0, Type = 0 )
-__attribute__((weak)) void hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
-    printf("hid_set_report_cb(weak stub): instance=%d id=%d type=%d buf=%p size=%d\n", instance, report_id, report_type, buffer, bufsize);
-    for (uint16_t i = 0; i < bufsize; i++) {
-        printf("  %02x", buffer[i]);
-        if ((i+1) % 16 == 0 || i == bufsize-1) {
-            printf("\n");
-        }
-    }
-
-#if 1
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
     // handle keyboard's LED status report.
     if (report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
         uint8_t r = 0, g = 0, b = 0;
@@ -50,15 +35,20 @@ __attribute__((weak)) void hid_set_report_cb(uint8_t instance, uint8_t report_id
             r = 0x33;
         }
         if (status & KEYBOARD_LED_SCROLLLOCK) {
-            g = 0x33;
+            g = 0x22;
         }
         ledarray_set_rgb(0, r, g, b);
+        return;
     }
-#endif
-}
 
-void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
-    hid_set_report_cb(instance, report_id, report_type, buffer, bufsize);
+    // dump unknown reports.
+    printf("unknown HID set report: instance=%d id=%d type=%d size=%d\n", instance, report_id, report_type, bufsize);
+    for (uint16_t i = 0; i < bufsize; i++) {
+        printf(" %02x", buffer[i]);
+        if ((i+1) % 16 == 0 || i == bufsize-1) {
+            printf("\n");
+        }
+    }
 }
 
 int main() {

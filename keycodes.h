@@ -147,9 +147,9 @@ enum hid_keyboard_keypad_usage {
     KC_PASTE        = 0x7D,
     KC_FIND         = 0x7E,
 
-    KC__MUTE        = 0x7F,
-    KC__VOLUP       = 0x80,
-    KC__VOLDOWN     = 0x81,
+    KC_MUTE         = 0x7F,
+    KC_VOLUP        = 0x80,
+    KC_VOLDOWN      = 0x81,
 
     KC_LOCKING_CAPS     = 0x82,
     KC_LOCKING_NUM      = 0x83,
@@ -246,7 +246,45 @@ enum hid_keyboard_keypad_usage {
     KC_RCTRL        = 0xE4,
     KC_RSHIFT       = 0xE5,
     KC_RALT         = 0xE6,
-    KC_RGUI         = 0xE7
+    KC_RGUI         = 0xE7,
+
+    // Shorthands
+
+    KC_ESC      = KC_ESCAPE,
+    KC_MINS     = KC_MINUS,
+    KC_EQL      = KC_EQUAL,
+    KC_BSLS     = KC_BSLASH,
+    KC_GRV      = KC_GRAVE,
+    KC_LBRC     = KC_LBRACKET,
+    KC_RBRC     = KC_RBRACKET,
+    KC_SCLN     = KC_SCOLON,
+    KC_QUOT     = KC_QUOTE,
+    KC_ENT      = KC_ENTER,
+    KC_COMM     = KC_COMMA,
+    KC_SLSH     = KC_SLASH,
+    KC_SPC      = KC_SPACE,
+    KC_INS      = KC_INSERT,
+    KC_DEL      = KC_DELETE,
+    KC_CAPS     = KC_CAPSLOCK,
+    KC_NLCK     = KC_NUMLOCK,
+    KC_PSCR     = KC_PSCREEN,
+    KC_SLCK     = KC_SCROLLLOCK,
+    KC_PAUS     = KC_PAUSE,
+    KC_RGHT     = KC_RIGHT,
+    KC_PGDN     = KC_PGDOWN,
+
+    KC_VOLD     = KC_VOLDOWN,
+    KC_VOLU     = KC_VOLUP,
+
+    KC_PAST     = KC_KP_ASTERISK,
+    KC_PSLS     = KC_KP_SLASH,
+    KC_PPLS     = KC_KP_PLUS,
+    KC_PMNS     = KC_KP_MINUS,
+
+    KC_LCTL     = KC_LCTRL,
+    KC_RCTL     = KC_RCTRL,
+    KC_LSFT     = KC_LSHIFT,
+    KC_RSFT     = KC_RSHIFT,
 };
 
 #define KCX(n)			(0x8000 | ((n) & 0x7FFF))

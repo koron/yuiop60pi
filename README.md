@@ -29,5 +29,5 @@ Output: `build\yuiop60pi.uf2`
 Edit these files:
 
 * config.h - hardware information
-* keymap.c - keymap definition (WIP)
-* main.c - add more extra features
+* keymap.c - keymap definition
+* main.c - add awesome extra features

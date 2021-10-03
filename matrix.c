@@ -31,14 +31,11 @@
 // DEBOUNCE_USEC is inhibition interval (us) for changing status of each
 // keys.
 #ifndef DEBOUNCE_USEC
-# define DEBOUNCE_USEC  500
+# define DEBOUNCE_USEC      (10*1000)
 #endif
 
 static const uint col_pins[] = COL_PINS;
 static const uint row_pins[] = ROW_PINS;
-
-// scan_interval is interval for each row scanning of matrix (us).
-static const uint16_t scan_interval = 30;
 
 static uint32_t row_scanmask;
 static uint32_t row_scanval[ROW_NUM];
@@ -52,11 +49,11 @@ typedef struct {
 static scan_state matrix_states[COL_NUM * ROW_NUM];
 
 __attribute__((weak)) void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
-    printf("matrix_changed: col=%d row=%d %s when=%d\n", ncol, nrow, on ? "ON" : "OFF", when);
+    printf("matrix_changed: col=%d row=%d %s when=%llu\n", ncol, nrow, on ? "ON" : "OFF", when);
 }
 
 __attribute__((weak)) void matrix_suppressed(uint ncol, uint nrow, bool on, uint64_t when, uint64_t last, uint64_t elapsed) {
-    printf("matrix_suppressed: col=%d row=%d %s when=%d last=%d elapsed=%d\n", ncol, nrow, on ? "ON" : "OFF", when, last, elapsed);
+    printf("matrix_suppressed: col=%d row=%d %s when=%llu last=%llu elapsed=%llu\n", ncol, nrow, on ? "ON" : "OFF", when, last, elapsed);
 }
 
 // matrix_task scan whole switch matrix.

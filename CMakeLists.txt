@@ -21,6 +21,7 @@ add_executable(yuiop60pi
 	matrix.c
 	backlight.c
 	ledarray.c
+	usb_descriptors.c
 	)
 
 # Link Time Optimization is not supported yet.
@@ -34,14 +35,16 @@ pico_enable_stdio_usb(yuiop60pi 0)
 
 target_include_directories(yuiop60pi PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
+	${CMAKE_CURRENT_LIST_DIR}/include
 	)
 
 target_link_libraries(yuiop60pi
 	pico_stdlib
+	pico_unique_id
 	hardware_pio
 	hardware_dma
-	#tinyusb_device
-	#tinyusb_board
+	tinyusb_device
+	tinyusb_board
 	)
 
 pico_add_extra_outputs(yuiop60pi)

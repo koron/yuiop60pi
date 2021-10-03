@@ -22,6 +22,9 @@ add_executable(yuiop60pi
 	backlight.c
 	ledarray.c
 	usb_descriptors.c
+	layer.c
+	kbd.c
+	keymap.c
 	)
 
 # Link Time Optimization is not supported yet.

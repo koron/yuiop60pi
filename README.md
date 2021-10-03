@@ -23,3 +23,11 @@ Output: `build\yuiop60pi.uf2`
     * COLUMNS: 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10
     * ROWS: 8, 7, 6, 5, 4
 * LED array: 9
+
+## How to modify for your own keyborads
+
+Edit these files:
+
+* config.h - hardware information
+* keymap.c - keymap definition (WIP)
+* main.c - add more extra features

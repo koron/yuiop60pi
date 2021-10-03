@@ -14,3 +14,8 @@ clean:
 .PHONY: distclean
 distclean:
 	rm -rf build
+	rm -f tags
+
+.PHONY: tags
+tags:
+	ctags --exclude=build/ -R .

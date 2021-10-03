@@ -6,7 +6,7 @@
 static void update_rainbow(uint t) {
     uint level = 3;
     //uint level = (t / LEDARRAY_NUM) % 7;
-    for (int i = 0; i < LEDARRAY_NUM; i++) {
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;
         float h = (float)((i + t) % LEDARRAY_NUM)/ (float)LEDARRAY_NUM * 6;
         int phase = (int)h;
@@ -49,7 +49,7 @@ static void update_rainbow(uint t) {
 }
 
 static void update_snake(uint t) {
-    for (int i = 0; i < LEDARRAY_NUM; i++) {
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
         uint32_t c = 0;
         uint x = (i + t) % LEDARRAY_NUM;
         if (x < 5) {

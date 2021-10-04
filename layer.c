@@ -68,7 +68,7 @@ static bool is_kcx_g(keycode_t kc, keycode_t gcode, keycode_t mask, uint16_t *cc
 
 uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     keycode_t kc = 0;
-    for (int i = LAYER_MAXNUM; i >= 0; i++) {
+    for (int i = LAYER_MAXNUM; i >= 0; i--) {
         if (!layer_is_enabled(i)) {
             continue;
         }

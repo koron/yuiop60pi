@@ -151,6 +151,7 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
     if (instance == 1) {
         bool send = tud_hid_n_report(1, report_id, buffer, bufsize);
         printf("VIA set report: id=%d type=%d buf[0]=%02x size=%d send=%d\n", report_id, report_type, buffer[0], bufsize, send);
+        // TODO: handle VIA's commands
         return;
     }
 

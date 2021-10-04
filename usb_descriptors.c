@@ -35,28 +35,6 @@ uint8_t const * tud_descriptor_device_cb(void) {
 //////////////////////////////////////////////////////////////////////////////
 // HID Report Descriptor
 
-#define VIA_EPSIZE      32
-
-#define TUD_HID_REPORT_DESC_VIA() \
-    HID_USAGE_PAGE_N ( 0xff60, 2                  ),\
-    HID_USAGE        ( 0x61                       ),\
-    HID_COLLECTION   ( HID_COLLECTION_APPLICATION ),\
-      /* Data to host (input) */\
-      HID_USAGE        ( 0x62                                   ),\
-      HID_LOGICAL_MIN  ( 0x00                                   ),\
-      HID_LOGICAL_MAX  ( 0xff                                   ),\
-      HID_REPORT_SIZE  ( 0x08                                   ),\
-      HID_REPORT_COUNT ( VIA_EPSIZE                             ),\
-      HID_INPUT        ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ),\
-      /* Data from host (output) */\
-      HID_USAGE        ( 0x63                                   ),\
-      HID_LOGICAL_MIN  ( 0x00                                   ),\
-      HID_LOGICAL_MAX  ( 0xff                                   ),\
-      HID_REPORT_SIZE  ( 0x08                                   ),\
-      HID_REPORT_COUNT ( VIA_EPSIZE                             ),\
-      HID_OUTPUT       ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ),\
-    HID_COLLECTION_END\
-
 uint8_t const desc_hid_report[] = {
     TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(REPORT_ID_KEYBOARD)),
 };
@@ -68,9 +46,9 @@ uint8_t const desc_via_report[] = {
 uint8_t const * tud_hid_descriptor_report_cb(uint8_t itf) {
     printf("tud_hid_descriptor_report_cb(%d)\n", itf);
     switch (itf) {
-        case 0: //ITF_NUM_HID
+        case ITF_NUM_HID:
             return desc_hid_report;
-        case 1: //ITF_NUM_VIA
+        case ITF_NUM_VIA:
             return desc_via_report;
         default:
             return NULL;
@@ -80,26 +58,19 @@ uint8_t const * tud_hid_descriptor_report_cb(uint8_t itf) {
 //////////////////////////////////////////////////////////////////////////////
 // Configuration Descriptor
 
-enum {
-    ITF_NUM_HID,
-    ITF_NUM_VIA,
-    ITF_NUM_TOTAL
-};
-
 #define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_INOUT_DESC_LEN)
 
-#define EPNUM_HID   0x81
-
-#define VIA_IN_EPNUM_HID    0x82
-#define VIA_OUT_EPNUM_HID   0x03
+#define EPNUM_HID       0x81
+#define EPNUM_VIA_IN    0x82
+#define EPNUM_VIA_OUT   0x03
 
 uint8_t const desc_configuration[] = {
     // Config number, interface count, string index, total length, attribute, power in mA
     TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
-    TUD_HID_DESCRIPTOR(ITF_NUM_HID, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_report), EPNUM_HID, CFG_TUD_HID_EP_BUFSIZE, 5),
+    TUD_HID_DESCRIPTOR(ITF_NUM_HID, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_report), EPNUM_HID, CFG_TUD_HID_EP_BUFSIZE, 10),
 
-    TUD_HID_INOUT_DESCRIPTOR(ITF_NUM_VIA, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_via_report), VIA_OUT_EPNUM_HID, VIA_IN_EPNUM_HID, VIA_EPSIZE, 5),
+    TUD_HID_INOUT_DESCRIPTOR(ITF_NUM_VIA, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_via_report), EPNUM_VIA_OUT, EPNUM_VIA_IN, VIA_EPSIZE, 1),
 };
 
 uint8_t const * tud_descriptor_configuration_cb(uint8_t index) {

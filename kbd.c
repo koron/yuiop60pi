@@ -104,7 +104,7 @@ void kbd_task(uint64_t now) {
     }
     // send keyboard report with boot protocol.
     //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X)\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5]);
-    tud_hid_keyboard_report(REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+    tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
     // clear changed flag.
     kbd_changed = false;
 }
@@ -128,7 +128,7 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 // Update LOCK indicator LEDs.
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
     // handle keyboard's LED status report.
-    if (instance == 0 && report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
+    if (instance == ITF_NUM_HID && report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
         uint8_t r = 0, g = 0, b = 0;
         uint8_t status = 0;
         if (bufsize == 2) {
@@ -148,7 +148,7 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
     }
 
     // handle VIA status report.
-    if (instance == 1) {
+    if (instance == ITF_NUM_VIA && report_id == 0 && report_type == HID_REPORT_TYPE_OUTPUT) {
         bool send = tud_hid_n_report(1, report_id, buffer, bufsize);
         printf("VIA set report: id=%d type=%d buf[0]=%02x size=%d send=%d\n", report_id, report_type, buffer[0], bufsize, send);
         // TODO: handle VIA's commands

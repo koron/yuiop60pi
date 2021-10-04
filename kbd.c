@@ -114,8 +114,9 @@ void kbd_task(uint64_t now) {
 // Application must fill buffer report's content and return its length.
 // Return zero will cause the stack to STALL request.
 uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
-    printf("unhandle HID get report: instance=%d id=%d type=%d buf=%p len=%d\n", instance, report_id, report_type, buffer, reqlen);
-    return 0;
+    printf("unhandle HID get report: instance=%d id=%d type=%d buf[0]=%02x len=%d\n", instance, report_id, report_type, buffer[0], reqlen);
+    // TODO: handle raw HID report
+    return reqlen;
 }
 
 // TODO: curve out LED control to main.c or so.

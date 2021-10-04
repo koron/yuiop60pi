@@ -15,6 +15,7 @@
 void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
     uint8_t code = layer_get_code(ncol, nrow, on);
     if (code != 0) {
+        printf("code=%02x %s (row=%d col=%-2d)\n", code, on ? "on" : "off", ncol, nrow);
         kbd_report_code(code, on);
     }
 }

@@ -115,7 +115,6 @@ void kbd_task(uint64_t now) {
 // Return zero will cause the stack to STALL request.
 uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer, uint16_t reqlen) {
     printf("unhandle HID get report: instance=%d id=%d type=%d buf[0]=%02x len=%d\n", instance, report_id, report_type, buffer[0], reqlen);
-    // TODO: handle raw HID report
     return reqlen;
 }
 
@@ -129,7 +128,7 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 // Update LOCK indicator LEDs.
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
     // handle keyboard's LED status report.
-    if (report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
+    if (instance == 0 && report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
         uint8_t r = 0, g = 0, b = 0;
         uint8_t status = 0;
         if (bufsize == 2) {
@@ -145,6 +144,13 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             g = 0x22;
         }
         ledarray_set_rgb(0, r, g, b);
+        return;
+    }
+
+    // handle VIA status report.
+    if (instance == 1) {
+        bool send = tud_hid_n_report(1, report_id, buffer, bufsize);
+        printf("VIA set report: id=%d type=%d buf[0]=%02x size=%d send=%d\n", report_id, report_type, buffer[0], bufsize, send);
         return;
     }
 

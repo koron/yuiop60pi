@@ -9,8 +9,8 @@
 #include "matrix.h"
 #include "layer.h"
 #include "kbd.h"
-#include "usb_descriptors.h"
 #include "onboard_led.h"
+#include "ledarray.h"
 
 void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
     uint8_t code = layer_get_code(ncol, nrow, on);
@@ -18,6 +18,21 @@ void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
         //printf("code=%02x %s (row=%d col=%-2d)\n", code, on ? "on" : "off", ncol, nrow);
         kbd_report_code(code, on);
     }
+}
+
+void kbd_indicator_changed(kbd_indicator_t v) {
+    // apply lock indicators status to 1st LED.
+    uint8_t r = 0, g = 0, b = 0;
+    if (v.num) {
+        b = 0x33;
+    }
+    if (v.caps) {
+        r = 0x33;
+    }
+    if (v.scroll) {
+        g = 0x22;
+    }
+    ledarray_set_rgb(0, r, g, b);
 }
 
 int main() {

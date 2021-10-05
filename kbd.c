@@ -6,6 +6,7 @@
 #include "config.h"
 #include "usb_descriptors.h"
 #include "keycodes.h"
+#include "kbd.h"
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -118,32 +119,36 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
     return reqlen;
 }
 
-// TODO: curve out LED control to main.c or so.
-
-#include "ledarray.h"
+__attribute__((weak)) void kbd_indicator_changed(kbd_indicator_t v) {
+    printf("kbd_indicator_changed: %d %d %d %d %d\n", v.num, v.caps, v.scroll, v.compose, v.kana);
+}
 
 // Invoked when received SET_REPORT control request or received data on OUT
 // endpoint ( Report ID = 0, Type = 0 )
-//
-// Update LOCK indicator LEDs.
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer, uint16_t bufsize) {
     // handle keyboard's LED status report.
     if (instance == ITF_NUM_HID && report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
-        uint8_t r = 0, g = 0, b = 0;
         uint8_t status = 0;
         if (bufsize == 2) {
             status = buffer[1];
         }
+        kbd_indicator_t next = {};
         if (status & KEYBOARD_LED_NUMLOCK) {
-            b = 0x33;
+            next.num = true;
         }
         if (status & KEYBOARD_LED_CAPSLOCK) {
-            r = 0x33;
+            next.caps = true;
         }
         if (status & KEYBOARD_LED_SCROLLLOCK) {
-            g = 0x22;
+            next.scroll = true;
         }
-        ledarray_set_rgb(0, r, g, b);
+        if (status & KEYBOARD_LED_COMPOSE) {
+            next.compose = true;
+        }
+        if (status & KEYBOARD_LED_KANA) {
+            next.kana = true;
+        }
+        kbd_indicator_changed(next);
         return;
     }
 

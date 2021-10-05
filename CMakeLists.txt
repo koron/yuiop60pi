@@ -23,9 +23,9 @@ add_executable(yuiop60pi
 	ledarray.c
 	usb_descriptors.c
 	layer.c
-	kbd.c
 	keymap.c
 	via.c
+	kbd.c
 	)
 
 # Link Time Optimization is not supported yet.

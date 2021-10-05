@@ -44,7 +44,6 @@ uint8_t const desc_via_report[] = {
 };
 
 uint8_t const * tud_hid_descriptor_report_cb(uint8_t itf) {
-    printf("tud_hid_descriptor_report_cb(%d)\n", itf);
     switch (itf) {
         case ITF_NUM_HID:
             return desc_hid_report;

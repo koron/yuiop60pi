@@ -10,7 +10,7 @@ enum {
 // HID report ID
 enum {
     REPORT_ID_KEYBOARD  = 1,
-    //REPORT_ID_VIA       = 2,
+    REPORT_ID_VIA       = 2,
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -124,7 +124,7 @@ __attribute__((weak)) void kbd_indicator_changed(kbd_indicator_t v) {
 }
 
 __attribute__((weak)) bool kbd_handle_via_command(uint8_t *cmd, uint8_t *data, uint16_t len) {
-    printf("kbd_handle_via_command: cmd=%02x size=%d\n", cmd, len);
+    printf("kbd_handle_via_command (null): cmd=%02x size=%d\n", *cmd, len);
     return false;
 }
 
@@ -158,13 +158,13 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
     }
 
     // handle VIA status report.
-    if (instance == ITF_NUM_VIA && report_id == 0 && report_type == HID_REPORT_TYPE_OUTPUT) {
+    if (instance == ITF_NUM_VIA && report_id == 0 && report_type == 0) {
         uint8_t response[CFG_TUD_HID_EP_BUFSIZE];
         memcpy(response, buffer, bufsize);
         if (kbd_handle_via_command(&response[0], &response[1], bufsize - 1)) {
-            tud_hid_n_report(ITF_NUM_VIA, report_id, buffer, bufsize);
+            tud_hid_n_report(ITF_NUM_VIA, 0, response, bufsize);
         } else {
-            printf("not responded VIA report: %02x %02x ...", buffer[0], buffer[1]);
+            printf("not responded VIA report: %02x %02x ...\n", buffer[0], buffer[1]);
         }
         return;
     }

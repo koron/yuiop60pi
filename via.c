@@ -9,6 +9,14 @@
 #include "via.h"
 
 //////////////////////////////////////////////////////////////////////////////
+// matrix
+
+static void get_matrix_state(uint8_t *data) {
+    //printf("VIA: get_matrix_state\n");
+    // TODO: fetch matrix state in 28 bytes (224 bits).
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // layout
 
 // FIXME: marshal and unmarshal
@@ -155,8 +163,7 @@ static bool get_keyboard_value(uint8_t *cmd, uint8_t *data) {
             break;
 
         case via_kbvid_matrix_state:
-            printf("VIA: get_keyboard_value(matrix_state)\n");
-            // TODO: fetch matrix state in 28 bytes (224 bits).
+            get_matrix_state(data);
             break;
 
         default:

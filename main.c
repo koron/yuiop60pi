@@ -52,7 +52,4 @@ int main() {
         kbd_task(now);
         tud_task();
     }
-
-    printf("YUIOP60Pi: end\n");
-    return 0;
 }

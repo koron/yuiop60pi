@@ -163,6 +163,8 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
         memcpy(response, buffer, bufsize);
         if (kbd_handle_via_command(&response[0], &response[1], bufsize - 1)) {
             tud_hid_n_report(ITF_NUM_VIA, report_id, buffer, bufsize);
+        } else {
+            printf("not responded VIA report: %02x %02x ...", buffer[0], buffer[1]);
         }
         return;
     }

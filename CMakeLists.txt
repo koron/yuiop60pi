@@ -25,6 +25,7 @@ add_executable(yuiop60pi
 	layer.c
 	kbd.c
 	keymap.c
+	via.c
 	)
 
 # Link Time Optimization is not supported yet.
@@ -44,6 +45,7 @@ target_include_directories(yuiop60pi PRIVATE
 target_link_libraries(yuiop60pi
 	pico_stdlib
 	pico_unique_id
+	pico_time
 	hardware_pio
 	hardware_dma
 	tinyusb_device

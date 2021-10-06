@@ -7,6 +7,7 @@
 #include "config.h"
 #include "matrix.h"
 #include "kbd.h"
+#include "lighting.h"
 #include "via.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -65,17 +66,100 @@ static void dynamic_keymap_reset(void) {
 
 static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
     printf("VIA: lighting_set_value: %02x %02x\n", *cmd, data[0]);
-    // TODO: implement me.
+    switch (data[0]) {
+        case via_lightid_backlight_brightness:
+            backlight_set_brightness(data[1]);
+            break;
+        case via_lightid_backlight_effect:
+            backlight_set_effect(data[1]);
+            break;
+        case via_lightid_rgblight_brightness:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                s.val = data[1];
+                rgblight_set_state(&s);
+            }
+            break;
+        case via_lightid_rgblight_effect:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                s.mode = data[1];
+                rgblight_set_state(&s);
+            }
+            break;
+        case via_lightid_rgblight_effect_speed:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                s.speed = data[1];
+                rgblight_set_state(&s);
+            }
+            break;
+        case via_lightid_rgblight_color:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                s.hue = data[1];
+                s.sat = data[2];
+                rgblight_set_state(&s);
+            }
+            break;
+        default:
+            *cmd = via_id_unhandled;
+            break;
+    }
 }
 
 static void lighting_get_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
     printf("VIA: lighting_get_value: %02x %02x\n", *cmd, data[0]);
-    // TODO: implement me.
+    switch (data[0]) {
+        case via_lightid_backlight_brightness:
+            data[1] = backlight_get_brightness();
+            break;
+        case via_lightid_backlight_effect:
+            data[1] = backlight_get_effect();
+            break;
+        case via_lightid_rgblight_brightness:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                data[1] = s.val;
+            }
+            break;
+        case via_lightid_rgblight_effect:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                data[1] = s.mode;
+            }
+            break;
+        case via_lightid_rgblight_effect_speed:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                data[1] = s.speed;
+            }
+            break;
+        case via_lightid_rgblight_color:
+            {
+                rgblight_state_t s;
+                rgblight_get_state(&s);
+                data[1] = s.hue;
+                data[2] = s.sat;
+            }
+            break;
+        default:
+            *cmd = via_id_unhandled;
+            break;
+    }
 }
 
 static void lighting_save(void) {
     printf("VIA: lighting_save\n");
-    // TODO: implement me.
+    backlight_save();
+    rgblight_save();
 }
 
 //////////////////////////////////////////////////////////////////////////////

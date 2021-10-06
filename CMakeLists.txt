@@ -19,6 +19,7 @@ add_executable(yuiop60pi
 	main.c
 	onboard_led.c
 	matrix.c
+	lighting.c
 	backlight.c
 	ledarray.c
 	usb_descriptors.c

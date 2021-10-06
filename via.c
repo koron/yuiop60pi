@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // layout
 
-// FIXME: marshal and unmarshal
+// FIXME: marshal, unmarshal, and apply.
 static uint32_t layout_options = 0;
 
 static uint32_t get_layout_options(void) {
@@ -96,7 +96,7 @@ static void bootloader_jump(void) {
 
 #define MACRO_BUFFER_SIZE    1024
 
-// FIXME: marshal and unmarshal
+// FIXME: marshal, unmarshal, and apply
 static uint8_t macro_buffer[MACRO_BUFFER_SIZE] = {0};
 
 static uint8_t dynamic_keymap_macro_get_count(void) {

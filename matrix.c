@@ -13,6 +13,8 @@
 #ifndef COL_NUM
 # pragma GCC error "COL_NUM should be defined in config.h"
 # define COL_NUM    0
+#elif COL_NUM > 32
+# pragma GCC error "COL_NUM should be <= 32"
 #endif
 #ifndef ROW_PINS
 # pragma GCC error "ROW_PINS should be defined in config.h"
@@ -47,6 +49,28 @@ typedef struct {
 } scan_state;
 
 static scan_state matrix_states[COL_NUM * ROW_NUM];
+
+// matrix_get_state fetches whole matrix status (on/off) as bits form, into
+// limited buffer in "size" bytes.
+void matrix_get_state(uint8_t *data, uint16_t size) {
+    const int ROW_BYTES = (COL_NUM + 7) / 8; // 1-4
+    uint x = 0;
+    uint16_t w = 0;
+    for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
+        uint32_t curr = 0;
+        for (uint ncol = 0; ncol < COL_NUM; ncol++) {
+            if (matrix_states[x].on) {
+                curr |= 1 << ncol;
+            }
+            x++;
+        }
+        curr <<= 8 * (4 - ROW_BYTES);
+        for (uint8_t i = 0; i < ROW_BYTES && w < size; i++) {
+            data[w++] = (curr >> 24) & 0xff;
+            curr <<= 8;
+        }
+    }
+}
 
 __attribute__((weak)) void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
     printf("matrix_changed: col=%d row=%d %s when=%llu\n", ncol, nrow, on ? "ON" : "OFF", when);

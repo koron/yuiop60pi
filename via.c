@@ -5,16 +5,9 @@
 #include "pico/time.h"
 
 #include "config.h"
+#include "matrix.h"
 #include "kbd.h"
 #include "via.h"
-
-//////////////////////////////////////////////////////////////////////////////
-// matrix
-
-static void get_matrix_state(uint8_t *data) {
-    //printf("VIA: get_matrix_state\n");
-    // TODO: fetch matrix state in 28 bytes (224 bits).
-}
 
 //////////////////////////////////////////////////////////////////////////////
 // layout
@@ -163,7 +156,7 @@ static bool get_keyboard_value(uint8_t *cmd, uint8_t *data) {
             break;
 
         case via_kbvid_matrix_state:
-            get_matrix_state(data);
+            matrix_get_state(&data[1], 28);
             break;
 
         default:

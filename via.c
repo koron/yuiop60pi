@@ -8,6 +8,7 @@
 #include "matrix.h"
 #include "kbd.h"
 #include "lighting.h"
+#include "dynamic_keymap.h"
 #include "via.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -24,41 +25,6 @@ static uint32_t get_layout_options(void) {
 static void set_layout_options(uint32_t value) {
     printf("VIA: set_layout_options: %d\n", value);
     layout_options = value;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// layer & keymap
-
-static uint8_t dynamic_keymap_get_layer_count(void) {
-    printf("VIA: dynamic_keymap_get_layer_count\n");
-    // FIXME: configurable
-    return 4;
-}
-
-static void dynamic_keymap_get_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
-    printf("VIA: dynamic_keymap_get_buffer: %04x %d\n", offset, size);
-    // TODO: implement me.
-}
-
-static void dynamic_keymap_set_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
-    printf("VIA: dynamic_keymap_set_buffer: %04x %d\n", offset, size);
-    // TODO: implement me.
-}
-
-static uint16_t dynamic_keymap_get_keycode(uint8_t layer, uint8_t row, uint8_t col) {
-    printf("VIA: dynamic_keymap_get_keycode: layer=%d row=%d col=%d\n", layer, row, col);
-    // TODO: implement me.
-    return 0;
-}
-
-static void dynamic_keymap_set_keycode(uint8_t layer, uint8_t row, uint8_t col, uint16_t keycode) {
-    printf("VIA: dynamic_keymap_set_keycode: layer=%d row=%d col=%d keycode=%04x\n", layer, row, col, keycode);
-    // TODO: implement me.
-}
-
-static void dynamic_keymap_reset(void) {
-    printf("VIA: dynamic_keymap_reset\n");
-    // TODO: implement me.
 }
 
 //////////////////////////////////////////////////////////////////////////////

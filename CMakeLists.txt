@@ -17,16 +17,18 @@ pico_sdk_init()
 
 add_executable(yuiop60pi
 	main.c
-	onboard_led.c
 	matrix.c
 	lighting.c
-	backlight.c
 	ledarray.c
 	usb_descriptors.c
 	layer.c
 	keymap.c
+	dynamic_keymap.c
 	via.c
 	kbd.c
+	# WIP
+	onboard_led.c
+	backlight.c
 	)
 
 # Link Time Optimization is not supported yet.

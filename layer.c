@@ -3,13 +3,13 @@
 
 #include "config.h"
 #include "keycodes.h"
-#include "keymap.h"
+#include "dynamic_keymap.h"
 
 #define LAYER_MAXNUM	31
 
 uint32_t layer_state = 0;
 
-bool layer_is_enabled(int layer) {
+bool layer_is_enabled(uint8_t layer) {
     if (layer < 0 || layer > LAYER_MAXNUM) {
         return false;
     }
@@ -45,13 +45,6 @@ void layer_toggle(int layer) {
     layer_set(layer, !layer_is_enabled(layer));
 }
 
-static keycode_t get_layer_code(int layer, uint ncol, uint nrow) {
-    if (layer < 0 || layer > KEYMAP_LAYER_MAX || keymaps[layer] == 0) {
-        return KC_NO;
-    }
-    return keymaps[layer][nrow][ncol];
-}
-
 static bool is_kcx(keycode_t kc) {
     return (kc & 0x8000) != 0;
 }
@@ -68,11 +61,11 @@ static bool is_kcx_g(keycode_t kc, keycode_t gcode, keycode_t mask, uint16_t *cc
 
 uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     keycode_t kc = 0;
-    for (int i = LAYER_MAXNUM; i >= 0; i--) {
+    for (uint8_t i = LAYER_MAXNUM; i >= 0; i--) {
         if (!layer_is_enabled(i)) {
             continue;
         }
-        kc = get_layer_code(i, ncol, nrow);
+        kc = dynamic_keymap_get_keycode(i, nrow, ncol);
         // continue when kc is KCX_TRNS.
         if (kc != KCX_TRNS) {
             break;

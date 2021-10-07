@@ -4,6 +4,8 @@
 extern "C" {
 #endif
 
+void dynamic_keymap_init(void);
+
 void dynamic_keymap_reset(void);
 
 uint8_t dynamic_keymap_get_layer_count(void);

@@ -257,6 +257,7 @@ enum hid_keyboard_keypad_usage {
     KC_GRV      = KC_GRAVE,
     KC_LBRC     = KC_LBRACKET,
     KC_RBRC     = KC_RBRACKET,
+    KC_BSPC     = KC_BSPACE,
     KC_SCLN     = KC_SCOLON,
     KC_QUOT     = KC_QUOTE,
     KC_ENT      = KC_ENTER,

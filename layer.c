@@ -45,16 +45,16 @@ void layer_toggle(int layer) {
     layer_set(layer, !layer_is_enabled(layer));
 }
 
-static bool is_kcx(keycode_t kc) {
-    return (kc & 0x8000) != 0;
+static bool is_hid_keycode(keycode_t kc) {
+    return kc >= KC_A && kc <= 0xff;
 }
 
-static bool is_kcx_g(keycode_t kc, keycode_t gcode, keycode_t mask, uint16_t *ccode) {
-    if ((kc & (~mask)) != (0x8000 | gcode)) {
+static bool is_kcx_qk(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_t *value) {
+    if ((kc & (~mask)) != constcode) {
         return false;
     }
-    if (ccode != NULL) {
-        *ccode = kc & mask;
+    if (value != NULL) {
+        *value = kc & mask;
     }
     return true;
 }
@@ -66,44 +66,44 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
             continue;
         }
         kc = dynamic_keymap_get_keycode(i, nrow, ncol);
-        // continue when kc is KCX_TRNS.
-        if (kc != KCX_TRNS) {
+        // continue when kc is KC_TRANSPARENT.
+        if (kc != KC_TRANSPARENT) {
             break;
         }
     }
-    if (kc == KC_NO || kc == KCX_TRNS) {
+    if (kc == KC_NO || kc == KC_TRANSPARENT) {
         // no HID code mapped.
         return 0;
     }
-    // mapped to immediate HID code.
-    if (!is_kcx(kc)) {
+    // send HID code immediately.
+    if (is_hid_keycode(kc)) {
         return (uint8_t)kc;
     }
 
-    // momentary turn layer on. (KCX_MO)
     uint16_t layer = 0;
-    if (is_kcx_g(0x0100, 0x1F, kc, &layer)) {
+
+    // turn on layer when pressed. (TO)
+    if (is_kcx_qk(QK_TO, 0x0f, kc, &layer)) {
+        if (on) {
+            layer_state = 0;
+            layer_set_enable((int)layer);
+        }
+        return 0;
+    }
+    // momentary turn layer on. (MO)
+    if (is_kcx_qk(QK_MOMENTARY, 0xff, kc, &layer)) {
         layer_set((int)layer, on);
         return 0;
     }
-    // toggle layer on/off. (KCX_TG)
-    if (is_kcx_g(0x0120, 0x1F, kc, &layer)) {
+    // toggle layer on/off. (TG)
+    if (is_kcx_qk(QK_TOGGLE_LAYER, 0xff, kc, &layer)) {
         if (on) {
             layer_toggle((int)layer);
         }
         return 0;
     }
-    // turn on layer when pressed. (KCX_TO)
-    if (is_kcx_g(0x0140, 0x1F, kc, &layer)) {
-        if (on) {
-            layer_set_enable((int)layer);
-        }
-        return 0;
-    }
-    if (kc == KCX_LRST) {
-        layer_state = 0;
-    }
 
-    // TODO: do function keys.
+    // TODO: implement other layer operations.
+
     return 0;
 }

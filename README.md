@@ -37,3 +37,11 @@ Edit these files:
 * config.h - hardware information
 * keymap.c - keymap definition
 * main.c - add awesome extra features
+
+## Supported QMK (tmk) specific keycodes
+
+* `TO(x)`
+* `MO(x)`
+* `TG(x)`
+
+Other special keycodes are not supported yet.

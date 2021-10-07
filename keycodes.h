@@ -248,7 +248,13 @@ enum hid_keyboard_keypad_usage {
     KC_RALT         = 0xE6,
     KC_RGUI         = 0xE7,
 
+    // QMK (tmk) extended codes
+
+    KC_TRANSPARENT  = 0x01,
+
     // Shorthands
+
+    KC_TRNS     = KC_TRANSPARENT,
 
     KC_ESC      = KC_ESCAPE,
     KC_MINS     = KC_MINUS,
@@ -288,18 +294,19 @@ enum hid_keyboard_keypad_usage {
     KC_RSFT     = KC_RSHIFT,
 };
 
-#define KCX(n)			(0x8000 | ((n) & 0x7FFF))
-#define KCX_G(c, m, x)		KCX((c) | ((x) & (m)))
-
-#define KCX_TRNS		KCX(0x0000)
-#define KCX_MO(x)		KCX_G(0x0100, 0x1F, x)
-#define KCX_TG(x)		KCX_G(0x0120, 0x1F, x)
-#define KCX_TO(x)		KCX_G(0x0140, 0x1F, x)
-#define KCX_LRST		KCX(0x00FF)
-
 // Quantum compatible functional keycodes.
+//
+// cf.
+// https://github.com/tmk/tmk_keyboard/blob/master/quantum/quantum_keycode.h
 
-#define KC_TRNS			KCX_TRNS
-#define MO(n)			KCX_MO(n)
-#define TG(n)			KCX_TG(n)
-#define TO(n)			KCX_TO(n)
+enum {
+    QK_TO           = 0x5010,
+    QK_MOMENTARY    = 0x5100,
+    QK_TOGGLE_LAYER = 0x5300,
+};
+
+#define KCX_QK(c, m, x)         ((c) | ((x) & (m)))
+
+#define TO(x)       KCX_QK(QK_TO,           0x0f, (x))
+#define MO(x)       KCX_QK(QK_MOMENTARY,    0xff, (x))
+#define TG(x)       KCX_QK(QK_TOGGLE_LAYER, 0xff, (x))

@@ -144,38 +144,44 @@ static void bootloader_jump(void) {
 //////////////////////////////////////////////////////////////////////////////
 // macro
 
-#define MACRO_BUFFER_SIZE    1024
+#ifndef DYNAMIC_KEYMAP_MACRO_COUNT
+# define DYNAMIC_KEYMAP_MACRO_COUNT     4
+#endif
+
+#ifndef DYNAMIC_KEYMAP_MACRO_BUFFERSIZE
+# define DYNAMIC_KEYMAP_MACRO_BUFFERSIZE    1024
+#endif
+
 
 // FIXME: marshal, unmarshal, and apply
-static uint8_t macro_buffer[MACRO_BUFFER_SIZE] = {0};
+static uint8_t macro_buffer[DYNAMIC_KEYMAP_MACRO_BUFFERSIZE] = {0};
 
 static uint8_t dynamic_keymap_macro_get_count(void) {
-    printf("VIA: dynamic_keymap_macro_get_count\n");
-    // FIXME: configurable
-    return 16;
+    //printf("VIA: dynamic_keymap_macro_get_count\n");
+    return DYNAMIC_KEYMAP_MACRO_COUNT;
 }
 
 static uint16_t dynamic_keymap_macro_get_buffer_size(void) {
-    printf("VIA: dynamic_keymap_macro_get_buffer_size\n");
+    //printf("VIA: dynamic_keymap_macro_get_buffer_size\n");
     return sizeof(macro_buffer);
 }
 
 static void dynamic_keymap_macro_get_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
-    printf("VIA: dynamic_keymap_macro_get_buffer: %04x %d\n", offset, size);
+    //printf("VIA: dynamic_keymap_macro_get_buffer: %04x %d\n", offset, size);
     if (offset < sizeof(macro_buffer) && size > 0) {
         memcpy(data, &macro_buffer[offset], MIN(size, sizeof(macro_buffer) - offset));
     }
 }
 
 static void dynamic_keymap_macro_set_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
-    printf("VIA: dynamic_keymap_macro_set_buffer: %04x %d\n", offset, size);
+    //printf("VIA: dynamic_keymap_macro_set_buffer: %04x %d\n", offset, size);
     if (offset < sizeof(macro_buffer) && size > 0) {
         memcpy(&macro_buffer[offset], data, MIN(size, sizeof(macro_buffer) - offset));
     }
 }
 
 static void dynamic_keymap_macro_reset(void) {
-    printf("VIA: dynamic_keymap_macro_reset\n");
+    //printf("VIA: dynamic_keymap_macro_reset\n");
     memset(macro_buffer, 0, sizeof(macro_buffer));
 }
 

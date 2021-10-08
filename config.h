@@ -48,4 +48,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // for dynamic_keymap.c
 
-//#define DYNAMIC_KEYMAP_LAYER_COUNT 4
+//#define DYNAMIC_KEYMAP_LAYER_COUNT         4
+//#define DYNAMIC_KEYMAP_MACRO_COUNT         16
+//#define DYNAMIC_KEYMAP_MACRO_BUFFERSIZE    1024

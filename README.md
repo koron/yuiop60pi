@@ -37,6 +37,7 @@ Edit these files:
 * config.h - hardware information
 * keymap.c - keymap definition
 * main.c - add awesome extra features
+* CMakeLists.txt
 
 ## Supported QMK (tmk) specific keycodes
 

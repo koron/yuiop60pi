@@ -18,8 +18,8 @@ typedef struct {
 
     uint8_t macro[DYNAMIC_KEYMAP_MACRO_BUFFERSIZE];
 
-    // for lightning
-    rgblight_state_t rgblight;
+    // for lighting
+    lighting_state_t lighting;
 } nvm_block_t;
 
 extern nvm_block_t nvm;

@@ -13,11 +13,11 @@ static uint64_t modified = 0;
 void nvm_init(void) {
     printf("sizeof(nvm_block_t)=%d\n", sizeof(nvm_block_t));
     memset(&nvm, 0, sizeof(nvm));
-    // TODO:
+    // TODO: read from XIP_BASE
 }
 
 void nvm_task(uint64_t now) {
-    // TODO:
+    // TODO: write to Flash
 }
 
 void nvm_set_modified(void) {

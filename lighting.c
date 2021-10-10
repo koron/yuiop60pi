@@ -12,28 +12,35 @@ static uint8_t backlight_brightness;
 static uint8_t backlight_effect;
 
 void backlight_save(void) {
-    // FIXME: implement me.
+    // FIXME: just apply soon?
+    nvm_set_modified();
 }
 
 uint8_t backlight_get_brightness(void) {
-    return backlight_brightness;
+    return nvm.lighting.backlight.brightness;
 }
 
-void backlight_set_brightness(uint8_t v) {
+void backlight_set_brightness(uint8_t v, bool persist) {
     printf("backlight_set_brightness: %d\n", v);
-    backlight_brightness = v;
-    // FIXME: apply change.
+    nvm.lighting.backlight.brightness = v;
+    if (persist) {
+        nvm_set_modified();
+    }
 }
 
 uint8_t backlight_get_effect(void) {
-    return backlight_effect;
+    return nvm.lighting.backlight.effect;
 }
 
-void backlight_set_effect(uint8_t v) {
+void backlight_set_effect(uint8_t v, bool persist) {
     printf("backlight_set_effect: %d\n", v);
-    backlight_effect = v;
-    // FIXME: apply change.
+    nvm.lighting.backlight.effect = v;
+    if (persist) {
+        nvm_set_modified();
+    }
 }
+
+// FIXME: implement backlight feature.
 
 //////////////////////////////////////////////////////////////////////////////
 // rgblight
@@ -47,7 +54,7 @@ void rgblight_get_state(rgblight_state_t *s) {
     if (s == NULL) {
         return;
     }
-    *s = nvm.rgblight;
+    *s = nvm.lighting.rgblight;
 }
 
 void rgblight_set_state(const rgblight_state_t *s, bool persist) {
@@ -55,7 +62,7 @@ void rgblight_set_state(const rgblight_state_t *s, bool persist) {
         return;
     }
     printf("rgblight_set_state: mode=%d speed=%d hue=%d sat=%d val=%d\n", s->mode, s->speed, s->hue, s->sat, s->val);
-    nvm.rgblight = *s;
+    nvm.lighting.rgblight = *s;
     if (persist) {
         nvm_set_modified();
     }

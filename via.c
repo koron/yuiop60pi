@@ -31,10 +31,10 @@ static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
     printf("VIA: lighting_set_value: %02x %02x\n", *cmd, data[0]);
     switch (data[0]) {
         case via_lightid_backlight_brightness:
-            backlight_set_brightness(data[1]);
+            backlight_set_brightness(data[1], false);
             break;
         case via_lightid_backlight_effect:
-            backlight_set_effect(data[1]);
+            backlight_set_effect(data[1], false);
             break;
         case via_lightid_rgblight_brightness:
             {

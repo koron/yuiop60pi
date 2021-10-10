@@ -2,6 +2,7 @@
 
 #include "pico/stdlib.h"
 
+#include "nvm.h"
 #include "lighting.h"
 
 //////////////////////////////////////////////////////////////////////////////
@@ -38,24 +39,26 @@ void backlight_set_effect(uint8_t v) {
 // rgblight
 
 void rgblight_save(void) {
-    // TODO: implement me.
+    // FIXME: just apply soon?
+    nvm_set_modified();
 }
-
-static rgblight_state_t rgblight_state;
 
 void rgblight_get_state(rgblight_state_t *s) {
     if (s == NULL) {
         return;
     }
-    *s = rgblight_state;
+    *s = nvm.rgblight;
 }
 
-void rgblight_set_state(const rgblight_state_t *s) {
+void rgblight_set_state(const rgblight_state_t *s, bool persist) {
     if (s == NULL) {
         return;
     }
     printf("rgblight_set_state: mode=%d speed=%d hue=%d sat=%d val=%d\n", s->mode, s->speed, s->hue, s->sat, s->val);
-    rgblight_state = *s;
-    // TODO: apply changes.
+    nvm.rgblight = *s;
+    if (persist) {
+        nvm_set_modified();
+    }
 }
 
+// TODO: implement RGB light feature.

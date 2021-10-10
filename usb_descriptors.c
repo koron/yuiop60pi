@@ -23,7 +23,7 @@ tusb_desc_device_t const desc_device = {
 
     .iManufacturer      = 0x01,
     .iProduct           = 0x02,
-    .iSerialNumber      = 0x03,
+    .iSerialNumber      = 0x00, // use 0x03 to enable serial no.
 
     .bNumConfigurations = 0x01
 };
@@ -118,9 +118,12 @@ static tusb_desc_string_t* string_descs[] = {
     &LanguageString,
     &ManufacturerString,
     &ProductString,
+#if 0
     &SerialString,
+#endif
 };
 
+#if 0
 static void setupSerialNumber() {
     char uid[PICO_UNIQUE_BOARD_ID_SIZE_BYTES*2 + 1];
     pico_get_unique_board_id_string(uid, sizeof(uid));
@@ -131,11 +134,14 @@ static void setupSerialNumber() {
     SerialString.bLength = DESC_STRING_LEN(PICO_UNIQUE_BOARD_ID_SIZE_BYTES*2);
 
 }
+#endif
 
 uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
+#if 0
     if (index == 3 && SerialString.unicode_string[0] == 0) {
         setupSerialNumber();
     }
+#endif
     if (index < count_of(string_descs)) {
         return (uint16_t const *)string_descs[index];
     }

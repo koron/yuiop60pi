@@ -5,6 +5,7 @@
 #include "pico/time.h"
 
 #include "config.h"
+#include "nvm.h"
 #include "matrix.h"
 #include "kbd.h"
 #include "lighting.h"
@@ -14,17 +15,13 @@
 //////////////////////////////////////////////////////////////////////////////
 // layout
 
-// FIXME: marshal, unmarshal, and apply.
-static uint32_t layout_options = 0;
-
 static uint32_t get_layout_options(void) {
-    printf("VIA: get_layout_options\n");
-    return layout_options;
+    return nvm.layout_options;
 }
 
 static void set_layout_options(uint32_t value) {
-    printf("VIA: set_layout_options: %d\n", value);
-    layout_options = value;
+    nvm.layout_options = value;
+    nvm_set_modified();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -44,7 +41,7 @@ static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
                 rgblight_state_t s;
                 rgblight_get_state(&s);
                 s.val = data[1];
-                rgblight_set_state(&s);
+                rgblight_set_state(&s, false);
             }
             break;
         case via_lightid_rgblight_effect:
@@ -52,7 +49,7 @@ static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
                 rgblight_state_t s;
                 rgblight_get_state(&s);
                 s.mode = data[1];
-                rgblight_set_state(&s);
+                rgblight_set_state(&s, false);
             }
             break;
         case via_lightid_rgblight_effect_speed:
@@ -60,7 +57,7 @@ static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
                 rgblight_state_t s;
                 rgblight_get_state(&s);
                 s.speed = data[1];
-                rgblight_set_state(&s);
+                rgblight_set_state(&s, false);
             }
             break;
         case via_lightid_rgblight_color:
@@ -69,7 +66,7 @@ static void lighting_set_value(uint8_t *cmd, uint8_t *data, uint16_t len) {
                 rgblight_get_state(&s);
                 s.hue = data[1];
                 s.sat = data[2];
-                rgblight_set_state(&s);
+                rgblight_set_state(&s, false);
             }
             break;
         default:
@@ -144,18 +141,6 @@ static void bootloader_jump(void) {
 //////////////////////////////////////////////////////////////////////////////
 // macro
 
-#ifndef DYNAMIC_KEYMAP_MACRO_COUNT
-# define DYNAMIC_KEYMAP_MACRO_COUNT     4
-#endif
-
-#ifndef DYNAMIC_KEYMAP_MACRO_BUFFERSIZE
-# define DYNAMIC_KEYMAP_MACRO_BUFFERSIZE    1024
-#endif
-
-
-// FIXME: marshal, unmarshal, and apply
-static uint8_t macro_buffer[DYNAMIC_KEYMAP_MACRO_BUFFERSIZE] = {0};
-
 static uint8_t dynamic_keymap_macro_get_count(void) {
     //printf("VIA: dynamic_keymap_macro_get_count\n");
     return DYNAMIC_KEYMAP_MACRO_COUNT;
@@ -163,26 +148,28 @@ static uint8_t dynamic_keymap_macro_get_count(void) {
 
 static uint16_t dynamic_keymap_macro_get_buffer_size(void) {
     //printf("VIA: dynamic_keymap_macro_get_buffer_size\n");
-    return sizeof(macro_buffer);
+    return sizeof(nvm.macro);
 }
 
 static void dynamic_keymap_macro_get_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
     //printf("VIA: dynamic_keymap_macro_get_buffer: %04x %d\n", offset, size);
-    if (offset < sizeof(macro_buffer) && size > 0) {
-        memcpy(data, &macro_buffer[offset], MIN(size, sizeof(macro_buffer) - offset));
+    if (offset < sizeof(nvm.macro) && size > 0) {
+        memcpy(data, &(nvm.macro[offset]), MIN(size, sizeof(nvm.macro) - offset));
     }
 }
 
 static void dynamic_keymap_macro_set_buffer(uint16_t offset, uint16_t size, uint8_t *data) {
     //printf("VIA: dynamic_keymap_macro_set_buffer: %04x %d\n", offset, size);
-    if (offset < sizeof(macro_buffer) && size > 0) {
-        memcpy(&macro_buffer[offset], data, MIN(size, sizeof(macro_buffer) - offset));
+    if (offset < sizeof(nvm.macro) && size > 0) {
+        memcpy(&(nvm.macro[offset]), data, MIN(size, sizeof(nvm.macro) - offset));
+        nvm_set_modified();
     }
 }
 
 static void dynamic_keymap_macro_reset(void) {
     //printf("VIA: dynamic_keymap_macro_reset\n");
-    memset(macro_buffer, 0, sizeof(macro_buffer));
+    memset(nvm.macro, 0, sizeof(nvm.macro));
+    nvm_set_modified();
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@
 #include "tusb.h"
 
 #include "config.h"
+#include "nvm.h"
 #include "backlight.h"
 #include "matrix.h"
 #include "dynamic_keymap.h"
@@ -39,6 +40,7 @@ void kbd_indicator_changed(kbd_indicator_t v) {
 int main() {
     setup_default_uart();
     printf("\nYUIOP60Pi: start\n");
+    nvm_init();
 
     onboard_led_init();
     backlight_init();
@@ -49,6 +51,8 @@ int main() {
 
     while(true) {
         uint64_t now = time_us_64();
+        nvm_task(now);
+
         onboard_led_task(now);
         backlight_task(now);
 

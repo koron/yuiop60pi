@@ -32,7 +32,7 @@ void rgblight_save(void);
 
 void rgblight_get_state(rgblight_state_t *s);
 
-void rgblight_set_state(const rgblight_state_t *s);
+void rgblight_set_state(const rgblight_state_t *s, bool persist);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,19 @@
 #pragma once
 
+#include "config.h"
+
+#ifndef DYNAMIC_KEYMAP_LAYER_COUNT
+# define DYNAMIC_KEYMAP_LAYER_COUNT     4
+#endif
+
+#ifndef DYNAMIC_KEYMAP_MACRO_COUNT
+# define DYNAMIC_KEYMAP_MACRO_COUNT     4
+#endif
+
+#ifndef DYNAMIC_KEYMAP_MACRO_BUFFERSIZE
+# define DYNAMIC_KEYMAP_MACRO_BUFFERSIZE    1024
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

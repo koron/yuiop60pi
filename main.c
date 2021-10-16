@@ -6,12 +6,12 @@
 
 #include "config.h"
 #include "nvm.h"
+#include "onboard_led.h"
 #include "backlight.h"
 #include "matrix.h"
 #include "dynamic_keymap.h"
 #include "layer.h"
 #include "kbd.h"
-#include "onboard_led.h"
 #include "ledarray.h"
 
 void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
@@ -26,13 +26,13 @@ void kbd_indicator_changed(kbd_indicator_t v) {
     // apply lock indicators status to 1st LED.
     uint8_t r = 0, g = 0, b = 0;
     if (v.num) {
-        b = 0x33;
+        b = 0xff;
     }
     if (v.caps) {
-        r = 0x33;
+        r = 0xff;
     }
     if (v.scroll) {
-        g = 0x22;
+        g = 0xaa;
     }
     ledarray_set_rgb(0, r, g, b);
 }
@@ -41,23 +41,21 @@ int main() {
     setup_default_uart();
     printf("\nYUIOP60Pi: start\n");
     nvm_init();
-
     onboard_led_init();
-    backlight_init();
-
+    //backlight_init();
     dynamic_keymap_init();
     matrix_init();
+    ledarray_init();
     tusb_init();
 
     while(true) {
         uint64_t now = time_us_64();
         nvm_task(now);
-
         onboard_led_task(now);
-        backlight_task(now);
-
+        //backlight_task(now);
         matrix_task(now);
         kbd_task(now);
+        ledarray_task(now);
         tud_task();
     }
 }

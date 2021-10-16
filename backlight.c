@@ -4,7 +4,7 @@
 #include "ledarray.h"
 
 static void update_rainbow(uint t) {
-    uint level = 3;
+    uint level = 2;
     //uint level = (t / LEDARRAY_NUM) % 7;
     for (int i = 1; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;
@@ -64,16 +64,92 @@ static void update_snake(uint t) {
     }
 }
 
+static void update_rgb_test(uint t) {
+    uint8_t r = 0, g = 0, b = 0;
+    uint8_t v = 0x08;
+    switch ((t / 45) % 3) {
+        case 0:
+            r = v;
+            break;
+        case 1:
+            g = v;
+            break;
+        case 2:
+            b = v;
+            break;
+    }
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
+        ledarray_set_rgb(i, r, g, b);
+    }
+}
+
+static void update_rgb_breath(uint t) {
+    uint8_t r = 0, g = 0, b = 0;
+    t = t * 2 / 10;
+    uint8_t v = t % 30;
+    if (v > 15) {
+        v = 30 - v;
+    }
+    v *= 17;
+    switch ((t / 30) % 3) {
+        case 0:
+            r = v;
+            break;
+        case 1:
+            g = v;
+            break;
+        case 2:
+            b = v;
+            break;
+    }
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
+        ledarray_set_rgb(i, r, g, b);
+    }
+}
+
 typedef void (*pattern)(uint t);
 
 static pattern patterns[] = {
     update_snake,
     update_rainbow,
+    update_rgb_test,
+    update_rgb_breath
 };
 
-const uint pattern_choice = 1;
+const uint pattern_choice = 2;
+
+static void rgb_test(uint64_t now) {
+    const uint8_t v = 0x10;
+    const uint64_t msec = 2000;
+
+    static uint64_t last = 0;
+    static uint8_t state = 0;
+    if (now - last < msec * 1000) {
+        return;
+    }
+    last = now;
+
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
+        uint8_t r = 0, g = 0, b = 0;
+        switch (state) {
+            case 0:
+                r = v;
+                break;
+            case 1:
+                g = v;
+                break;
+            case 2:
+                b = v;
+                break;
+        }
+        ledarray_set_rgb(i, r, g, b);
+    }
+    state = (state + 1) % 3;
+    ledarray_task(now);
+}
 
 void backlight_task(uint64_t now) {
+#if 1
     static uint64_t last = 0;
     static uint32_t state = 0;
     if (now - last < 33 * 1000) {
@@ -81,11 +157,13 @@ void backlight_task(uint64_t now) {
     }
     last = now;
     patterns[pattern_choice % count_of(patterns)](state);
-    if (ledarray_task()) {
+    if (ledarray_task(now)) {
         state++;
     }
+#else
+    rgb_test(now);
+#endif
 }
 
 void backlight_init() {
-    ledarray_init();
 }

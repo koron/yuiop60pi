@@ -25,6 +25,8 @@
 // reset delay for NeoPixel should be longer than 80us
 static const uint resetdelay_us = 100;
 
+bool ledarray_dirty = false;
+
 uint32_t ledarray_state[LEDARRAY_NUM] = {};
 
 static uint         dma_chan;
@@ -81,10 +83,14 @@ void ledarray_init() {
     dma_chan_mask = 1u << chan;
 }
 
-bool ledarray_task() {
+bool ledarray_task(uint64_t now) {
+    if (!ledarray_dirty) {
+        return false;
+    }
     if (!sem_acquire_timeout_ms(&resetdelay_sem, 0)) {
         return false;
     }
+    ledarray_dirty = false;
     dma_channel_set_read_addr(dma_chan, ledarray_state, true);
     return true;
 }

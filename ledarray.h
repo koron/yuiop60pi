@@ -1,6 +1,7 @@
 #pragma once
 
 extern uint32_t ledarray_state[LEDARRAY_NUM];
+extern bool ledarray_dirty;
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,7 +13,7 @@ void ledarray_init();
 
 // ledarray_task transfers bit data to NeoPixel LED.
 // it will do nothign when previos transfer doesn't end.
-bool ledarray_task();
+bool ledarray_task(uint64_t now);
 
 // ledarray_num is number of LED in the array.
 static inline int ledarray_num() {
@@ -25,6 +26,7 @@ static inline void ledarray_set_rgb(int i, uint8_t r, uint8_t g, uint8_t b) {
         ((uint32_t)(r) << 16) |
         ((uint32_t)(g) << 24) |
         ((uint32_t)(b) << 8);
+    ledarray_dirty = true;
 }
 
 // ledarray_resetdelay_completed is callbacked when ledarray_task can be

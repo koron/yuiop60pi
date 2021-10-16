@@ -55,7 +55,7 @@ target_link_libraries(yuiop60pi
 	tinyusb_device
 	tinyusb_board
 	# for debug
-	pico_bootsel_via_double_reset
+	#pico_bootsel_via_double_reset
 	)
 
 pico_add_extra_outputs(yuiop60pi)

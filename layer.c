@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "pico/stdlib.h"
 #include "tusb.h"
 
@@ -30,7 +32,7 @@ void layer_set_disable(int layer) {
     if (layer < 1 || layer > LAYER_MAXNUM) {
         return;
     }
-    layer_state |= ~(1 << (layer - 1));
+    layer_state &= ~(1 << (layer - 1));
 }
 
 void layer_set(int layer, bool enable) {
@@ -83,7 +85,7 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     uint16_t layer = 0;
 
     // turn on layer when pressed. (TO)
-    if (is_kcx_qk(QK_TO, 0x0f, kc, &layer)) {
+    if (is_kcx_qk(kc, QK_TO, 0x0f, &layer)) {
         if (on) {
             layer_state = 0;
             layer_set_enable((int)layer);
@@ -91,12 +93,12 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
         return 0;
     }
     // momentary turn layer on. (MO)
-    if (is_kcx_qk(QK_MOMENTARY, 0xff, kc, &layer)) {
+    if (is_kcx_qk(kc, QK_MOMENTARY, 0xff, &layer)) {
         layer_set((int)layer, on);
         return 0;
     }
     // toggle layer on/off. (TG)
-    if (is_kcx_qk(QK_TOGGLE_LAYER, 0xff, kc, &layer)) {
+    if (is_kcx_qk(kc, QK_TOGGLE_LAYER, 0xff, &layer)) {
         if (on) {
             layer_toggle((int)layer);
         }

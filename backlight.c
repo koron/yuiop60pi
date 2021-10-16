@@ -4,7 +4,7 @@
 #include "ledarray.h"
 
 static void update_rainbow(uint t) {
-    uint level = 2;
+    uint level = 3;
     //uint level = (t / LEDARRAY_NUM) % 7;
     for (int i = 1; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;
@@ -116,7 +116,7 @@ static pattern patterns[] = {
     update_rgb_breath
 };
 
-const uint pattern_choice = 2;
+const uint pattern_choice = 1;
 
 static void rgb_test(uint64_t now) {
     const uint8_t v = 0x10;
@@ -145,7 +145,6 @@ static void rgb_test(uint64_t now) {
         ledarray_set_rgb(i, r, g, b);
     }
     state = (state + 1) % 3;
-    ledarray_task(now);
 }
 
 void backlight_task(uint64_t now) {
@@ -157,9 +156,7 @@ void backlight_task(uint64_t now) {
     }
     last = now;
     patterns[pattern_choice % count_of(patterns)](state);
-    if (ledarray_task(now)) {
-        state++;
-    }
+    state++;
 #else
     rgb_test(now);
 #endif

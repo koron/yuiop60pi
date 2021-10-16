@@ -42,7 +42,7 @@ int main() {
     printf("\nYUIOP60Pi: start\n");
     nvm_init();
     onboard_led_init();
-    //backlight_init();
+    backlight_init();
     dynamic_keymap_init();
     matrix_init();
     ledarray_init();
@@ -52,7 +52,7 @@ int main() {
         uint64_t now = time_us_64();
         nvm_task(now);
         onboard_led_task(now);
-        //backlight_task(now);
+        backlight_task(now);
         matrix_task(now);
         kbd_task(now);
         ledarray_task(now);

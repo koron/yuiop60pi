@@ -17,19 +17,19 @@ pico_sdk_init()
 
 add_executable(yuiop60pi
 	main.c
-	matrix.c
-	lighting.c
-	ledarray.c
-	usb_descriptors.c
-	layer.c
 	keymap.c
-	dynamic_keymap.c
-	via.c
-	kbd.c
-	nvm.c
+	diykb/matrix.c
+	diykb/lighting.c
+	diykb/ledarray.c
+	diykb/usb_descriptors.c
+	diykb/layer.c
+	diykb/dynamic_keymap.c
+	diykb/via.c
+	diykb/kbd.c
+	diykb/nvm.c
 	# WIP
-	onboard_led.c
-	backlight.c
+	diykb/onboard_led.c
+	diykb/backlight.c
 	)
 
 # Link Time Optimization is not supported yet.
@@ -44,6 +44,8 @@ pico_enable_stdio_usb(yuiop60pi 0)
 target_include_directories(yuiop60pi PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
 	${CMAKE_CURRENT_LIST_DIR}/include
+	${CMAKE_CURRENT_LIST_DIR}/diykb
+	${CMAKE_CURRENT_LIST_DIR}/diykb/include
 	)
 
 target_link_libraries(yuiop60pi

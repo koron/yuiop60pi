@@ -303,6 +303,51 @@ enum {
     QK_TO           = 0x5010,
     QK_MOMENTARY    = 0x5100,
     QK_TOGGLE_LAYER = 0x5300,
+
+    // Backlight
+    BL_ON   = 0x5CBC,
+    BL_OFF  = 0x5CBD,
+    BL_DEC  = 0x5CBE,
+    BL_INC  = 0x5CBF,
+    BL_TOGG = 0x5CC0,
+    BL_STEP = 0x5CC1,
+    BL_BRTG = 0x5CC2,
+
+    // RGB underglow/matrix
+    RGB_TOG             = 0x5CC3,
+    RGB_MODE_FORWARD    = 0x5CC4,
+    RGB_MODE_REVERSE    = 0x5CC5,
+    RGB_HUI             = 0x5CC6,
+    RGB_HUD             = 0x5CC7,
+    RGB_SAI             = 0x5CC8,
+    RGB_SAD             = 0x5CC9,
+    RGB_VAI             = 0x5CCA,
+    RGB_VAD             = 0x5CCB,
+    RGB_SPI             = 0x5CCC,
+    RGB_SPD             = 0x5CCD,
+    RGB_MODE_PLAIN      = 0x5CCE,
+    RGB_MODE_BREATHE    = 0x5CCF,
+    RGB_MODE_RAINBOW    = 0x5CD0,
+    RGB_MODE_SWIRL      = 0x5CD1,
+    RGB_MODE_SNAKE      = 0x5CD2,
+    RGB_MODE_KNIGHT     = 0x5CD3,
+    RGB_MODE_XMAS       = 0x5CD4,
+    RGB_MODE_GRADIENT   = 0x5CD5,
+    RGB_MODE_RGBTEST    = 0x5CD6,
+
+    // RGB aliases
+    RGB_MOD     = RGB_MODE_FORWARD,
+    RGB_RMOD    = RGB_MODE_REVERSE,
+    RGB_M_P     = RGB_MODE_PLAIN,
+    RGB_M_B     = RGB_MODE_BREATHE,
+    RGB_M_R     = RGB_MODE_RAINBOW,
+    RGB_M_SW    = RGB_MODE_SWIRL,
+    RGB_M_SN    = RGB_MODE_SNAKE,
+    RGB_M_K     = RGB_MODE_KNIGHT,
+    RGB_M_X     = RGB_MODE_XMAS,
+    RGB_M_G     = RGB_MODE_GRADIENT,
+    RGB_M_T     = RGB_MODE_RGBTEST,
+    RGB_M_TW    = RGB_MODE_TWINKLE,
 };
 
 #define KCX_QK(c, m, x)         ((c) | ((x) & (m)))

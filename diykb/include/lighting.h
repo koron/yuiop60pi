@@ -6,6 +6,7 @@ typedef struct {
 } backlight_state_t;
 
 typedef struct {
+    bool    enable;
     uint8_t mode;
     uint8_t val;
     uint8_t hue;

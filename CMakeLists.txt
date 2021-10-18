@@ -27,6 +27,7 @@ add_executable(yuiop60pi
 	diykb/via.c
 	diykb/kbd.c
 	diykb/nvm.c
+	diykb/rgb.c
 	# WIP
 	diykb/onboard_led.c
 	diykb/backlight.c

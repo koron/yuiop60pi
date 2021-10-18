@@ -163,4 +163,33 @@ void backlight_task(uint64_t now) {
 }
 
 void backlight_init() {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_on(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_off(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_dec(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_inc(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_togg(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_step(void) {
+    // FIXME: implement me in future.
+}
+
+void backlight_act_brtg(void) {
+    // FIXME: implement me in future.
 }

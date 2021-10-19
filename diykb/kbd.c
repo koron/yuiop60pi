@@ -7,6 +7,7 @@
 #include "usb_descriptors.h"
 #include "keycodes.h"
 #include "kbd.h"
+#include "backlight.h"
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -177,4 +178,14 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             printf("\n");
         }
     }
+}
+
+void tud_suspend_cb(bool remote_wakeup_en) {
+    backlight_disable();
+    // FIXME: disable LED array animation.
+}
+
+void tud_resume_cb(void) {
+    backlight_enable();
+    // FIXME: resurrect LED array animation.
 }

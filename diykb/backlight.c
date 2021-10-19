@@ -116,6 +116,8 @@ static pattern patterns[] = {
     update_rgb_breath
 };
 
+static bool enable = true;
+
 const uint pattern_choice = 1;
 
 static void rgb_test(uint64_t now) {
@@ -148,6 +150,9 @@ static void rgb_test(uint64_t now) {
 }
 
 void backlight_task(uint64_t now) {
+    if (!enable) {
+        return;
+    }
 #if 1
     static uint64_t last = 0;
     static uint32_t state = 0;
@@ -164,6 +169,17 @@ void backlight_task(uint64_t now) {
 
 void backlight_init() {
     // FIXME: implement me in future.
+}
+
+void backlight_disable(void) {
+    for (int i = 1; i < LEDARRAY_NUM; i++) {
+        ledarray_set_rgb(i, 0, 0, 0);
+    }
+    enable = false;
+}
+
+void backlight_enable(void) {
+    enable = true;
 }
 
 void backlight_act_on(void) {

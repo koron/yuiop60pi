@@ -7,6 +7,9 @@ extern "C" {
 void backlight_init();
 void backlight_task(uint64_t now);
 
+void backlight_disable(void);
+void backlight_enable(void);
+
 void backlight_act_on(void);
 void backlight_act_off(void);
 void backlight_act_dec(void);

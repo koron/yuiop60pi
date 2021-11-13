@@ -141,8 +141,8 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
     // handle keyboard's LED status report.
     if (instance == ITF_NUM_HID && report_id == REPORT_ID_KEYBOARD && report_type == HID_REPORT_TYPE_OUTPUT) {
         uint8_t status = 0;
-        if (bufsize == 2) {
-            status = buffer[1];
+        if (bufsize >= 1) {
+            status = buffer[0];
         }
         kbd_indicator_t next = {};
         if (status & KEYBOARD_LED_NUMLOCK) {

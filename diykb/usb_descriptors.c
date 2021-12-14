@@ -39,16 +39,10 @@ uint8_t const desc_hid_report[] = {
     TUD_HID_REPORT_DESC_KEYBOARD(HID_REPORT_ID(REPORT_ID_KEYBOARD)),
 };
 
-uint8_t const desc_via_report[] = {
-    TUD_HID_REPORT_DESC_VIA(),
-};
-
 uint8_t const * tud_hid_descriptor_report_cb(uint8_t itf) {
     switch (itf) {
         case ITF_NUM_HID:
             return desc_hid_report;
-        case ITF_NUM_VIA:
-            return desc_via_report;
         default:
             return NULL;
     }
@@ -57,19 +51,15 @@ uint8_t const * tud_hid_descriptor_report_cb(uint8_t itf) {
 //////////////////////////////////////////////////////////////////////////////
 // Configuration Descriptor
 
-#define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_INOUT_DESC_LEN)
+#define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN)
 
 #define EPNUM_HID       0x81
-#define EPNUM_VIA_IN    0x82
-#define EPNUM_VIA_OUT   0x03
 
 uint8_t const desc_configuration[] = {
     // Config number, interface count, string index, total length, attribute, power in mA
     TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
     TUD_HID_DESCRIPTOR(ITF_NUM_HID, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_hid_report), EPNUM_HID, CFG_TUD_HID_EP_BUFSIZE, 10),
-
-    TUD_HID_INOUT_DESCRIPTOR(ITF_NUM_VIA, 0, HID_ITF_PROTOCOL_NONE, sizeof(desc_via_report), EPNUM_VIA_OUT, EPNUM_VIA_IN, VIA_EPSIZE, 1),
 };
 
 uint8_t const * tud_descriptor_configuration_cb(uint8_t index) {
@@ -118,30 +108,9 @@ static tusb_desc_string_t* string_descs[] = {
     &LanguageString,
     &ManufacturerString,
     &ProductString,
-#if 0
-    &SerialString,
-#endif
 };
 
-#if 0
-static void setupSerialNumber() {
-    char uid[PICO_UNIQUE_BOARD_ID_SIZE_BYTES*2 + 1];
-    pico_get_unique_board_id_string(uid, sizeof(uid));
-    printf("unique board id: %s\n", uid);
-    for (int i = 0; i < PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2; i++) {
-        SerialString.unicode_string[i] = uid[i];
-    }
-    SerialString.bLength = DESC_STRING_LEN(PICO_UNIQUE_BOARD_ID_SIZE_BYTES*2);
-
-}
-#endif
-
 uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
-#if 0
-    if (index == 3 && SerialString.unicode_string[0] == 0) {
-        setupSerialNumber();
-    }
-#endif
     if (index < count_of(string_descs)) {
         return (uint16_t const *)string_descs[index];
     }

@@ -19,15 +19,12 @@ add_executable(yuiop60pi
 	main.c
 	keymap.c
 	diykb/matrix.c
-	diykb/lighting.c
 	diykb/ledarray.c
 	diykb/usb_descriptors.c
 	diykb/layer.c
 	diykb/dynamic_keymap.c
-	diykb/via.c
 	diykb/kbd.c
 	diykb/nvm.c
-	diykb/rgb.c
 	# WIP
 	diykb/onboard_led.c
 	diykb/backlight.c
@@ -44,7 +41,6 @@ pico_enable_stdio_usb(yuiop60pi 0)
 
 target_include_directories(yuiop60pi PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
-	${CMAKE_CURRENT_LIST_DIR}/include
 	${CMAKE_CURRENT_LIST_DIR}/diykb
 	${CMAKE_CURRENT_LIST_DIR}/diykb/include
 	)

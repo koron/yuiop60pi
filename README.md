@@ -39,10 +39,10 @@ Edit these files:
 * main.c - add awesome extra features
 * CMakeLists.txt
 
-## Supported QMK (tmk) specific keycodes
+## Supported layer control special codes
 
-* `TO(x)`
-* `MO(x)`
-* `TG(x)`
+* `TO(x)` - Turn on a layer when pressing
+* `MO(x)` - Momentary turn a layer on.
+* `TG(x)` - Toggle a layer on/off.
 
 Other special keycodes are not supported yet.

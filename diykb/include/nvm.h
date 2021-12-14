@@ -3,7 +3,6 @@
 #include "config.h"
 #include "keycodes.h"
 #include "dynamic_keymap.h"
-#include "lighting.h"
 
 typedef struct {
     // management headers
@@ -17,9 +16,6 @@ typedef struct {
     keycode_t keymaps[DYNAMIC_KEYMAP_LAYER_COUNT][ROW_NUM][COL_NUM];
 
     uint8_t macro[DYNAMIC_KEYMAP_MACRO_BUFFERSIZE];
-
-    // for lighting
-    lighting_state_t lighting;
 } nvm_block_t;
 
 extern nvm_block_t nvm;

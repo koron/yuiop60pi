@@ -7,7 +7,6 @@
 #include "keycodes.h"
 #include "dynamic_keymap.h"
 #include "backlight.h"
-#include "rgb.h"
 
 #define LAYER_MAXNUM	31
 
@@ -89,109 +88,6 @@ static bool process_layer_action(keycode_t kc, bool on) {
     return false;
 }
 
-static bool process_backlight_action(keycode_t kc, bool on) {
-    if (!on) {
-        return false;
-    }
-    switch (kc) {
-        case BL_ON:
-            backlight_act_on();
-            break;
-        case BL_OFF:
-            backlight_act_off();
-            break;
-        case BL_DEC:
-            backlight_act_dec();
-            break;
-        case BL_INC:
-            backlight_act_inc();
-            break;
-        case BL_TOGG:
-            backlight_act_togg();
-            break;
-        case BL_STEP:
-            backlight_act_step();
-            break;
-        case BL_BRTG:
-            backlight_act_brtg();
-            break;
-        default:
-            return false;
-    }
-    return true;
-}
-
-static bool process_rgb_action(keycode_t kc, bool on) {
-    if (!on) {
-        return false;
-    }
-    switch (kc) {
-        case RGB_TOG:
-            rgb_act_tog();
-            break;
-        case RGB_MODE_FORWARD:
-            rgb_act_mode_forward();
-            break;
-        case RGB_MODE_REVERSE:
-            rgb_act_mode_reverse();
-            break;
-        case RGB_HUI:
-            rgb_act_hui();
-            break;
-        case RGB_HUD:
-            rgb_act_hud();
-            break;
-        case RGB_SAI:
-            rgb_act_sai();
-            break;
-        case RGB_SAD:
-            rgb_act_sad();
-            break;
-        case RGB_VAI:
-            rgb_act_vai();
-            break;
-        case RGB_VAD:
-            rgb_act_vad();
-            break;
-        case RGB_SPI:
-            rgb_act_spi();
-            break;
-        case RGB_SPD:
-            rgb_act_spd();
-            break;
-        case RGB_MODE_PLAIN:
-            rgb_act_mode_plain();
-            break;
-        case RGB_MODE_BREATHE:
-            rgb_act_mode_breathe();
-            break;
-        case RGB_MODE_RAINBOW:
-            rgb_act_mode_rainbow();
-            break;
-        case RGB_MODE_SWIRL:
-            rgb_act_mode_swirl();
-            break;
-        case RGB_MODE_SNAKE:
-            rgb_act_mode_snake();
-            break;
-        case RGB_MODE_KNIGHT:
-            rgb_act_mode_knight();
-            break;
-        case RGB_MODE_XMAS:
-            rgb_act_mode_xmas();
-            break;
-        case RGB_MODE_GRADIENT:
-            rgb_act_mode_gradient();
-            break;
-        case RGB_MODE_RGBTEST:
-            rgb_act_mode_rgbtest();
-            break;
-        default:
-            return false;
-    }
-    return true;
-}
-
 uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     keycode_t kc = 0;
     for (uint8_t i = LAYER_MAXNUM; i >= 0; i--) {
@@ -214,12 +110,6 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     }
     // process various actoins.
     if (process_layer_action(kc, on)) {
-        return 0;
-    }
-    if (process_backlight_action(kc, on)) {
-        return 0;
-    }
-    if (process_rgb_action(kc, on)) {
         return 0;
     }
     // FIXME: add more actions.

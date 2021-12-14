@@ -181,31 +181,3 @@ void backlight_disable(void) {
 void backlight_enable(void) {
     enable = true;
 }
-
-void backlight_act_on(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_off(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_dec(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_inc(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_togg(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_step(void) {
-    // FIXME: implement me in future.
-}
-
-void backlight_act_brtg(void) {
-    // FIXME: implement me in future.
-}

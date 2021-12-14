@@ -48,7 +48,7 @@ void layer_toggle(int layer) {
     layer_set(layer, !layer_is_enabled(layer));
 }
 
-static keycode_t get_keycode(int layer, uint ncol, uint nrow) {
+static keycode_t get_keycode(int layer, uint nrow, uint ncol) {
     if (layer < 0 || layer > KEYMAP_LAYER_MAX || keymaps[layer] == 0) {
         return KC_NO;
     }

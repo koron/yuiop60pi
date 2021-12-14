@@ -4,7 +4,7 @@
 #include "ledarray.h"
 
 static void update_rainbow(uint t) {
-    uint level = 3;
+    uint level = 1;
     //uint level = (t / LEDARRAY_NUM) % 7;
     for (int i = 1; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;

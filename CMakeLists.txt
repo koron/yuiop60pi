@@ -42,7 +42,6 @@ pico_enable_stdio_usb(yuiop60pi 0)
 target_include_directories(yuiop60pi PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
 	${CMAKE_CURRENT_LIST_DIR}/diykb
-	${CMAKE_CURRENT_LIST_DIR}/diykb/include
 	)
 
 target_link_libraries(yuiop60pi

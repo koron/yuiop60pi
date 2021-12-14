@@ -18,13 +18,11 @@ pico_sdk_init()
 add_executable(yuiop60pi
 	main.c
 	keymap.c
-	diykb/matrix.c
-	diykb/ledarray.c
 	diykb/usb_descriptors.c
+	diykb/matrix.c
 	diykb/layer.c
-	diykb/dynamic_keymap.c
 	diykb/kbd.c
-	diykb/nvm.c
+	diykb/ledarray.c
 	# WIP
 	diykb/onboard_led.c
 	diykb/backlight.c

@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include "keycodes.h"
-#include "dynamic_keymap.h"
+#include "keymap.h"
 #include "backlight.h"
 
 #define LAYER_MAXNUM	31
@@ -46,6 +46,13 @@ void layer_set(int layer, bool enable) {
 
 void layer_toggle(int layer) {
     layer_set(layer, !layer_is_enabled(layer));
+}
+
+static keycode_t get_keycode(int layer, uint ncol, uint nrow) {
+    if (layer < 0 || layer > KEYMAP_LAYER_MAX || keymaps[layer] == 0) {
+        return KC_NO;
+    }
+    return keymaps[layer][nrow][ncol];
 }
 
 static bool is_hid_keycode(keycode_t kc) {
@@ -94,7 +101,7 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
         if (!layer_is_enabled(i)) {
             continue;
         }
-        kc = dynamic_keymap_get_keycode(i, nrow, ncol);
+        kc = get_keycode(i, nrow, ncol);
         // continue when kc is KC_TRANSPARENT.
         if (kc != KC_TRANSPARENT) {
             break;

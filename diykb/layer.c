@@ -1,12 +1,10 @@
 #include <stdio.h>
 
 #include "pico/stdlib.h"
-#include "tusb.h"
 
 #include "config.h"
 #include "keycodes.h"
 #include "keymap.h"
-#include "backlight.h"
 
 #define LAYER_MAXNUM	31
 

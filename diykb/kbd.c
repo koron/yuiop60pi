@@ -7,7 +7,6 @@
 #include "usb_descriptors.h"
 #include "keycodes.h"
 #include "kbd.h"
-#include "backlight.h"
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -110,8 +109,10 @@ void kbd_task(uint64_t now) {
         memcpy(kbd_code, tmp, sizeof(kbd_code));
     }
     // send keyboard report with boot protocol.
-    //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
-    tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+    if (tud_hid_n_ready(ITF_NUM_HID)) {
+        //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
+        tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+    }
     // clear changed flag, and update last reported timestamp.
     kbd_changed = false;
     reported_at = now;
@@ -167,14 +168,4 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             printf("\n");
         }
     }
-}
-
-void tud_suspend_cb(bool remote_wakeup_en) {
-    backlight_disable();
-    // FIXME: disable LED array animation.
-}
-
-void tud_resume_cb(void) {
-    backlight_enable();
-    // FIXME: resurrect LED array animation.
 }

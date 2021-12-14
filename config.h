@@ -44,10 +44,3 @@
     {   K43, KC_NO,   K44,   K45,   K46,   K47,   K48,   K49,   K50,   K51,   K52,   K53, KC_NO,   K54,   K55 }, \
     { KC_NO,   K56,   K57, KC_NO, KC_NO, KC_NO,   K58, KC_NO, KC_NO, KC_NO,   K59,   K60, KC_NO, KC_NO, KC_NO }  \
 }
-
-//////////////////////////////////////////////////////////////////////////////
-// for dynamic_keymap.c
-
-//#define DYNAMIC_KEYMAP_LAYER_COUNT         4
-//#define DYNAMIC_KEYMAP_MACRO_COUNT         16
-//#define DYNAMIC_KEYMAP_MACRO_BUFFERSIZE    1024

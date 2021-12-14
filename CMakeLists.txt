@@ -24,7 +24,6 @@ add_executable(yuiop60pi
 	diykb/kbd.c
 	diykb/ledarray.c
 	# WIP
-	diykb/onboard_led.c
 	diykb/backlight.c
 	)
 

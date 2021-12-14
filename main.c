@@ -5,7 +5,6 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "onboard_led.h"
 #include "backlight.h"
 #include "matrix.h"
 #include "layer.h"
@@ -38,7 +37,6 @@ void kbd_indicator_changed(kbd_indicator_t v) {
 int main() {
     setup_default_uart();
     printf("\nYUIOP60Pi: start\n");
-    onboard_led_init();
     backlight_init();
     matrix_init();
     ledarray_init();
@@ -46,7 +44,6 @@ int main() {
 
     while(true) {
         uint64_t now = time_us_64();
-        onboard_led_task(now);
         backlight_task(now);
         matrix_task(now);
         kbd_task(now);

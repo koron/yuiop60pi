@@ -6,9 +6,6 @@ typedef uint16_t keycode_t;
 
 // HID Usage Table for USB Version 1.21
 // https://usb.org/sites/default/files/hut1_21_0.pdf
-//
-// KC_* Symbols keep compatibility with tmk_core
-// https://github.com/tmk/tmk_keyboard/blob/master/tmk_core/common/keycode.h
 enum hid_keyboard_keypad_usage {
     KC_NO           = 0x00,
     KC_ROLL_OVER    = 0x01,
@@ -247,61 +244,59 @@ enum hid_keyboard_keypad_usage {
     KC_RSHIFT       = 0xE5,
     KC_RALT         = 0xE6,
     KC_RGUI         = 0xE7,
+};
 
-    // QMK (tmk) extended codes
+// Shorthands
+enum keycode_shortand {
+    KC_ESC  = KC_ESCAPE,
+    KC_MINS = KC_MINUS,
+    KC_EQL  = KC_EQUAL,
+    KC_BSLS = KC_BSLASH,
+    KC_GRV  = KC_GRAVE,
+    KC_LBRC = KC_LBRACKET,
+    KC_RBRC = KC_RBRACKET,
+    KC_BSPC = KC_BSPACE,
+    KC_SCLN = KC_SCOLON,
+    KC_QUOT = KC_QUOTE,
+    KC_ENT  = KC_ENTER,
+    KC_COMM = KC_COMMA,
+    KC_SLSH = KC_SLASH,
+    KC_SPC  = KC_SPACE,
+    KC_INS  = KC_INSERT,
+    KC_DEL  = KC_DELETE,
+    KC_CAPS = KC_CAPSLOCK,
+    KC_NLCK = KC_NUMLOCK,
+    KC_PSCR = KC_PSCREEN,
+    KC_SLCK = KC_SCROLLLOCK,
+    KC_PAUS = KC_PAUSE,
+    KC_RGHT = KC_RIGHT,
+    KC_PGDN = KC_PGDOWN,
 
-    KC_TRANSPARENT  = 0x01,
+    KC_VOLD = KC_VOLDOWN,
+    KC_VOLU = KC_VOLUP,
 
-    // Shorthands
+    KC_PAST = KC_KP_ASTERISK,
+    KC_PSLS = KC_KP_SLASH,
+    KC_PPLS = KC_KP_PLUS,
+    KC_PMNS = KC_KP_MINUS,
 
-    KC_TRNS     = KC_TRANSPARENT,
-
-    KC_ESC      = KC_ESCAPE,
-    KC_MINS     = KC_MINUS,
-    KC_EQL      = KC_EQUAL,
-    KC_BSLS     = KC_BSLASH,
-    KC_GRV      = KC_GRAVE,
-    KC_LBRC     = KC_LBRACKET,
-    KC_RBRC     = KC_RBRACKET,
-    KC_BSPC     = KC_BSPACE,
-    KC_SCLN     = KC_SCOLON,
-    KC_QUOT     = KC_QUOTE,
-    KC_ENT      = KC_ENTER,
-    KC_COMM     = KC_COMMA,
-    KC_SLSH     = KC_SLASH,
-    KC_SPC      = KC_SPACE,
-    KC_INS      = KC_INSERT,
-    KC_DEL      = KC_DELETE,
-    KC_CAPS     = KC_CAPSLOCK,
-    KC_NLCK     = KC_NUMLOCK,
-    KC_PSCR     = KC_PSCREEN,
-    KC_SLCK     = KC_SCROLLLOCK,
-    KC_PAUS     = KC_PAUSE,
-    KC_RGHT     = KC_RIGHT,
-    KC_PGDN     = KC_PGDOWN,
-
-    KC_VOLD     = KC_VOLDOWN,
-    KC_VOLU     = KC_VOLUP,
-
-    KC_PAST     = KC_KP_ASTERISK,
-    KC_PSLS     = KC_KP_SLASH,
-    KC_PPLS     = KC_KP_PLUS,
-    KC_PMNS     = KC_KP_MINUS,
-
-    KC_LCTL     = KC_LCTRL,
-    KC_RCTL     = KC_RCTRL,
-    KC_LSFT     = KC_LSHIFT,
-    KC_RSFT     = KC_RSHIFT,
+    KC_LCTL = KC_LCTRL,
+    KC_RCTL = KC_RCTRL,
+    KC_LSFT = KC_LSHIFT,
+    KC_RSFT = KC_RSHIFT,
 };
 
 enum {
-    QK_TO           = 0x5010,
-    QK_MOMENTARY    = 0x5100,
-    QK_TOGGLE_LAYER = 0x5300,
+    KC_TRANSPARENT  = 0x8000,
+    KC_TRNS         = KC_TRANSPARENT,
+
+    KCX_TO           = 0x8100,
+    KCX_MOMENTARY    = 0x8200,
+    KCX_TOGGLE_LAYER = 0x8300,
 };
 
-#define KCX_QK(c, m, x)         ((c) | ((x) & (m)))
+#define KCX(c, m, x)    ((c) | ((x) & (m)))
 
-#define TO(x)       KCX_QK(QK_TO,           0x0f, (x))
-#define MO(x)       KCX_QK(QK_MOMENTARY,    0xff, (x))
-#define TG(x)       KCX_QK(QK_TOGGLE_LAYER, 0xff, (x))
+#define TO(x)           KCX(KCX_TO,           0x1f, (x))
+#define MO(x)           KCX(KCX_MOMENTARY,    0x1f, (x))
+#define TG(x)           KCX(KCX_TOGGLE_LAYER, 0x1f, (x))

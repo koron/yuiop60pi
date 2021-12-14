@@ -52,7 +52,7 @@ static bool is_hid_keycode(keycode_t kc) {
     return kc >= KC_A && kc <= 0xff;
 }
 
-static bool is_kcx_qk(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_t *value) {
+static bool is_kcx(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_t *value) {
     if ((kc & (~mask)) != constcode) {
         return false;
     }
@@ -65,7 +65,7 @@ static bool is_kcx_qk(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_
 static bool process_layer_action(keycode_t kc, bool on) {
     uint16_t layer = 0;
     // turn on layer when pressed. (TO)
-    if (is_kcx_qk(kc, QK_TO, 0x0f, &layer)) {
+    if (is_kcx(kc, KCX_TO, 0x1f, &layer)) {
         if (on) {
             layer_state = 0;
             layer_set_enable((int)layer);
@@ -73,12 +73,12 @@ static bool process_layer_action(keycode_t kc, bool on) {
         return true;
     }
     // momentary turn layer on. (MO)
-    if (is_kcx_qk(kc, QK_MOMENTARY, 0xff, &layer)) {
+    if (is_kcx(kc, KCX_MOMENTARY, 0x1f, &layer)) {
         layer_set((int)layer, on);
         return true;
     }
     // toggle layer on/off. (TG)
-    if (is_kcx_qk(kc, QK_TOGGLE_LAYER, 0xff, &layer)) {
+    if (is_kcx(kc, KCX_TOGGLE_LAYER, 0x1f, &layer)) {
         if (on) {
             layer_toggle((int)layer);
         }

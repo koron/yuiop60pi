@@ -12,6 +12,7 @@ typedef struct {
 extern "C" {
 #endif
 
+void kbd_init();
 void kbd_task(uint64_t now);
 void kbd_report_code(uint8_t code, bool on);
 

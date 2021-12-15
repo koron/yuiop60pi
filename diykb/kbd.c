@@ -83,6 +83,10 @@ void kbd_report_code(uint8_t code, bool on) {
     kbd_changed |= true;
 }
 
+void kbd_init() {
+    // nothing to do (currently)
+}
+
 void kbd_task(uint64_t now) {
     static uint64_t reported_at = 0;
     if (!kbd_changed) {

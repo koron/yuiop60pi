@@ -89,10 +89,6 @@ void kbd_task(uint64_t now) {
     if (!kbd_changed) {
         return;
     }
-    if (now - reported_at < 13*1000) {
-        //printf("hid_task: skipped: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
-        return;
-    }
     // clean up kbd_code. remove intermediate zeros, padding non-zero
     // codes to left.
     bool aligned = false;
@@ -110,11 +106,13 @@ void kbd_task(uint64_t now) {
         memcpy(kbd_code, tmp, sizeof(kbd_code));
     }
     // send keyboard report with boot protocol.
-    //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
-    tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
-    // clear changed flag, and update last reported timestamp.
-    kbd_changed = false;
-    reported_at = now;
+    if (tud_hid_n_ready(ITF_NUM_HID)) {
+        //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
+        tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+        // clear changed flag, and update last reported timestamp.
+        kbd_changed = false;
+        reported_at = now;
+    }
 }
 
 // Invoked when received GET_REPORT control request

@@ -27,7 +27,7 @@
 
 // SCANSHIFT_INTERVAL is interval for each row scanning of matrix (us).
 #ifndef SCANSHIFT_INTERVAL
-# define SCANSHIFT_INTERVAL 10
+# define SCANSHIFT_INTERVAL 1
 #endif
 
 // DEBOUNCE_USEC is inhibition interval (us) for changing status of each
@@ -38,10 +38,6 @@
 
 static const uint col_pins[] = COL_PINS;
 static const uint row_pins[] = ROW_PINS;
-
-static uint32_t row_scanmask;
-static uint32_t row_scanval[ROW_NUM];
-static uint32_t col_masks[COL_NUM];
 
 typedef struct {
     bool     on;
@@ -80,15 +76,30 @@ __attribute__((weak)) void matrix_suppressed(uint ncol, uint nrow, bool on, uint
     printf("matrix_suppressed: col=%d row=%d %s when=%llu last=%llu elapsed=%llu\n", ncol, nrow, on ? "ON" : "OFF", when, last, elapsed);
 }
 
+static void performance_count(uint64_t now) {
+#ifdef MATRIX_TASK_PERFORMANCE_COUNT
+    static uint64_t count = 0;
+    static uint64_t last = 0;
+    ++count;
+    if (now - last > 1000000) {
+        printf("matrix_task: performance_count: %llu/sec\n", count);
+        count = 0;
+        last = now;
+    }
+#endif
+}
+
 // matrix_task scan whole switch matrix.
 void matrix_task(uint64_t now) {
     uint x = 0;
     for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
-        gpio_put_masked(row_scanmask, row_scanval[nrow]);
+        uint pin = row_pins[nrow];
+        gpio_set_dir(pin, GPIO_OUT);
         sleep_us(SCANSHIFT_INTERVAL);
         uint32_t bits = gpio_get_all();
+        gpio_set_dir(pin, GPIO_IN);
         for (uint ncol = 0; ncol < COL_NUM; ncol++) {
-            bool on = (bits & col_masks[ncol]) == 0;
+            bool on = (bits & (1ul << col_pins[ncol])) == 0;
             if (on != matrix_states[x].on) {
                 uint64_t elapsed = now - matrix_states[x].last;
                 if (elapsed >= DEBOUNCE_USEC) {
@@ -102,6 +113,7 @@ void matrix_task(uint64_t now) {
             x++;
         }
     }
+    performance_count(now);
 }
 
 void matrix_init() {
@@ -112,21 +124,14 @@ void matrix_init() {
         gpio_init(io);
         gpio_set_dir(io, GPIO_IN);
         gpio_pull_up(io);
-        col_masks[i] = 1ul << io;
     }
     // setup pins of rows.
-    uint32_t mask = 0;
     for (int i = 0; i < ROW_NUM; i++) {
         uint io = row_pins[i];
         gpio_init(io);
-        gpio_set_dir(io, GPIO_OUT);
-        row_scanval[i] = ~(1ul << io);
-        mask |= 1ul << io;
-    }
-    // compose scan mask.
-    row_scanmask = mask;
-    for (int i = 0; i < ROW_NUM; i++) {
-        row_scanval[i] &= mask;
+        gpio_set_dir(io, GPIO_IN);
+        gpio_pull_up(io);
+        gpio_put(io, false);
     }
     memset(matrix_states, 0, sizeof(matrix_states));
 }

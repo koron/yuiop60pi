@@ -116,22 +116,24 @@ void matrix_task(uint64_t now) {
     performance_count(now);
 }
 
+// matrix_gpio_init initialize a GPIO for matrix as input dir, pull up, and
+// output LOW.
+static void matrix_gpio_init(uint gpio) {
+    gpio_init(gpio);
+    gpio_set_dir(gpio, GPIO_IN);
+    gpio_pull_up(gpio);
+    gpio_put(gpio, false);
+}
+
 void matrix_init() {
     //printf("matrix_init: sizeof(matrix_states)=%d\n", sizeof(matrix_states));
     // setup pins of columns.
     for (int i = 0; i < COL_NUM; i++) {
-        uint io = col_pins[i];
-        gpio_init(io);
-        gpio_set_dir(io, GPIO_IN);
-        gpio_pull_up(io);
+        matrix_gpio_init(col_pins[i]);
     }
     // setup pins of rows.
     for (int i = 0; i < ROW_NUM; i++) {
-        uint io = row_pins[i];
-        gpio_init(io);
-        gpio_set_dir(io, GPIO_IN);
-        gpio_pull_up(io);
-        gpio_put(io, false);
+        matrix_gpio_init(row_pins[i]);
     }
     memset(matrix_states, 0, sizeof(matrix_states));
 }

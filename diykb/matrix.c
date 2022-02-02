@@ -93,11 +93,13 @@ static void performance_count(uint64_t now) {
 void matrix_task(uint64_t now) {
     uint x = 0;
     for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
+        // select a row, wait a bit, fetch columns status, unselect a row.
         uint pin = row_pins[nrow];
         gpio_set_dir(pin, GPIO_OUT);
         sleep_us(SCANSHIFT_INTERVAL);
         uint32_t bits = gpio_get_all();
         gpio_set_dir(pin, GPIO_IN);
+        // parse columns status as matrix states.
         for (uint ncol = 0; ncol < COL_NUM; ncol++) {
             bool on = (bits & (1ul << col_pins[ncol])) == 0;
             if (on != matrix_states[x].on) {

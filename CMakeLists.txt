@@ -18,18 +18,12 @@ pico_sdk_init()
 add_executable(yuiop60pi
 	main.c
 	keymap.c
-	diykb/matrix.c
-	diykb/lighting.c
-	diykb/ledarray.c
 	diykb/usb_descriptors.c
+	diykb/matrix.c
 	diykb/layer.c
-	diykb/dynamic_keymap.c
-	diykb/via.c
 	diykb/kbd.c
-	diykb/nvm.c
-	diykb/rgb.c
+	diykb/ledarray.c
 	# WIP
-	diykb/onboard_led.c
 	diykb/backlight.c
 	)
 
@@ -37,16 +31,14 @@ add_executable(yuiop60pi
 #set_property(TARGET yuiop60pi PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 pico_set_program_name(yuiop60pi "yuiop60pi")
-pico_set_program_version(yuiop60pi "0.1")
+pico_set_program_version(yuiop60pi "0.2")
 
 pico_enable_stdio_uart(yuiop60pi 1)
 pico_enable_stdio_usb(yuiop60pi 0)
 
 target_include_directories(yuiop60pi PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
-	${CMAKE_CURRENT_LIST_DIR}/include
 	${CMAKE_CURRENT_LIST_DIR}/diykb
-	${CMAKE_CURRENT_LIST_DIR}/diykb/include
 	)
 
 target_link_libraries(yuiop60pi
@@ -57,8 +49,6 @@ target_link_libraries(yuiop60pi
 	hardware_dma
 	tinyusb_device
 	tinyusb_board
-	# for debug
-	#pico_bootsel_via_double_reset
 	)
 
 pico_add_extra_outputs(yuiop60pi)

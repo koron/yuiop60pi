@@ -6,9 +6,6 @@ typedef uint16_t keycode_t;
 
 // HID Usage Table for USB Version 1.21
 // https://usb.org/sites/default/files/hut1_21_0.pdf
-//
-// KC_* Symbols keep compatibility with tmk_core
-// https://github.com/tmk/tmk_keyboard/blob/master/tmk_core/common/keycode.h
 enum hid_keyboard_keypad_usage {
     KC_NO           = 0x00,
     KC_ROLL_OVER    = 0x01,
@@ -247,111 +244,59 @@ enum hid_keyboard_keypad_usage {
     KC_RSHIFT       = 0xE5,
     KC_RALT         = 0xE6,
     KC_RGUI         = 0xE7,
-
-    // QMK (tmk) extended codes
-
-    KC_TRANSPARENT  = 0x01,
-
-    // Shorthands
-
-    KC_TRNS     = KC_TRANSPARENT,
-
-    KC_ESC      = KC_ESCAPE,
-    KC_MINS     = KC_MINUS,
-    KC_EQL      = KC_EQUAL,
-    KC_BSLS     = KC_BSLASH,
-    KC_GRV      = KC_GRAVE,
-    KC_LBRC     = KC_LBRACKET,
-    KC_RBRC     = KC_RBRACKET,
-    KC_BSPC     = KC_BSPACE,
-    KC_SCLN     = KC_SCOLON,
-    KC_QUOT     = KC_QUOTE,
-    KC_ENT      = KC_ENTER,
-    KC_COMM     = KC_COMMA,
-    KC_SLSH     = KC_SLASH,
-    KC_SPC      = KC_SPACE,
-    KC_INS      = KC_INSERT,
-    KC_DEL      = KC_DELETE,
-    KC_CAPS     = KC_CAPSLOCK,
-    KC_NLCK     = KC_NUMLOCK,
-    KC_PSCR     = KC_PSCREEN,
-    KC_SLCK     = KC_SCROLLLOCK,
-    KC_PAUS     = KC_PAUSE,
-    KC_RGHT     = KC_RIGHT,
-    KC_PGDN     = KC_PGDOWN,
-
-    KC_VOLD     = KC_VOLDOWN,
-    KC_VOLU     = KC_VOLUP,
-
-    KC_PAST     = KC_KP_ASTERISK,
-    KC_PSLS     = KC_KP_SLASH,
-    KC_PPLS     = KC_KP_PLUS,
-    KC_PMNS     = KC_KP_MINUS,
-
-    KC_LCTL     = KC_LCTRL,
-    KC_RCTL     = KC_RCTRL,
-    KC_LSFT     = KC_LSHIFT,
-    KC_RSFT     = KC_RSHIFT,
 };
 
-// Quantum compatible functional keycodes.
-//
-// cf.
-// https://github.com/tmk/tmk_keyboard/blob/master/quantum/quantum_keycode.h
+// Shorthands
+enum keycode_shortand {
+    KC_ESC  = KC_ESCAPE,
+    KC_MINS = KC_MINUS,
+    KC_EQL  = KC_EQUAL,
+    KC_BSLS = KC_BSLASH,
+    KC_GRV  = KC_GRAVE,
+    KC_LBRC = KC_LBRACKET,
+    KC_RBRC = KC_RBRACKET,
+    KC_BSPC = KC_BSPACE,
+    KC_SCLN = KC_SCOLON,
+    KC_QUOT = KC_QUOTE,
+    KC_ENT  = KC_ENTER,
+    KC_COMM = KC_COMMA,
+    KC_SLSH = KC_SLASH,
+    KC_SPC  = KC_SPACE,
+    KC_INS  = KC_INSERT,
+    KC_DEL  = KC_DELETE,
+    KC_CAPS = KC_CAPSLOCK,
+    KC_NLCK = KC_NUMLOCK,
+    KC_PSCR = KC_PSCREEN,
+    KC_SLCK = KC_SCROLLLOCK,
+    KC_PAUS = KC_PAUSE,
+    KC_RGHT = KC_RIGHT,
+    KC_PGDN = KC_PGDOWN,
+
+    KC_VOLD = KC_VOLDOWN,
+    KC_VOLU = KC_VOLUP,
+
+    KC_PAST = KC_KP_ASTERISK,
+    KC_PSLS = KC_KP_SLASH,
+    KC_PPLS = KC_KP_PLUS,
+    KC_PMNS = KC_KP_MINUS,
+
+    KC_LCTL = KC_LCTRL,
+    KC_RCTL = KC_RCTRL,
+    KC_LSFT = KC_LSHIFT,
+    KC_RSFT = KC_RSHIFT,
+};
 
 enum {
-    QK_TO           = 0x5010,
-    QK_MOMENTARY    = 0x5100,
-    QK_TOGGLE_LAYER = 0x5300,
+    KC_TRANSPARENT  = 0x8000,
+    KC_TRNS         = KC_TRANSPARENT,
 
-    // Backlight
-    BL_ON   = 0x5CBB,
-    BL_OFF  = 0x5CBC,
-    BL_DEC  = 0x5CBD,
-    BL_INC  = 0x5CBE,
-    BL_TOGG = 0x5CBF,
-    BL_STEP = 0x5CC0,
-    BL_BRTG = 0x5CC1,
-
-    // RGB underglow/matrix
-    RGB_TOG             = 0x5CC2,
-    RGB_MODE_FORWARD    = 0x5CC3,
-    RGB_MODE_REVERSE    = 0x5CC4,
-    RGB_HUI             = 0x5CC5,
-    RGB_HUD             = 0x5CC6,
-    RGB_SAI             = 0x5CC7,
-    RGB_SAD             = 0x5CC8,
-    RGB_VAI             = 0x5CC9,
-    RGB_VAD             = 0x5CCA,
-    RGB_SPI             = 0x5CCB,
-    RGB_SPD             = 0x5CCC,
-    RGB_MODE_PLAIN      = 0x5CCD,
-    RGB_MODE_BREATHE    = 0x5CCE,
-    RGB_MODE_RAINBOW    = 0x5CCF,
-    RGB_MODE_SWIRL      = 0x5CD0,
-    RGB_MODE_SNAKE      = 0x5CD1,
-    RGB_MODE_KNIGHT     = 0x5CD2,
-    RGB_MODE_XMAS       = 0x5CD3,
-    RGB_MODE_GRADIENT   = 0x5CD4,
-    RGB_MODE_RGBTEST    = 0x5CD5,
-
-    // RGB aliases
-    RGB_MOD     = RGB_MODE_FORWARD,
-    RGB_RMOD    = RGB_MODE_REVERSE,
-    RGB_M_P     = RGB_MODE_PLAIN,
-    RGB_M_B     = RGB_MODE_BREATHE,
-    RGB_M_R     = RGB_MODE_RAINBOW,
-    RGB_M_SW    = RGB_MODE_SWIRL,
-    RGB_M_SN    = RGB_MODE_SNAKE,
-    RGB_M_K     = RGB_MODE_KNIGHT,
-    RGB_M_X     = RGB_MODE_XMAS,
-    RGB_M_G     = RGB_MODE_GRADIENT,
-    RGB_M_T     = RGB_MODE_RGBTEST,
-    //RGB_M_TW    = RGB_MODE_TWINKLE,
+    KCX_TO           = 0x8100,
+    KCX_MOMENTARY    = 0x8200,
+    KCX_TOGGLE_LAYER = 0x8300,
 };
 
-#define KCX_QK(c, m, x)         ((c) | ((x) & (m)))
+#define KCX(c, m, x)    ((c) | ((x) & (m)))
 
-#define TO(x)       KCX_QK(QK_TO,           0x0f, (x))
-#define MO(x)       KCX_QK(QK_MOMENTARY,    0xff, (x))
-#define TG(x)       KCX_QK(QK_TOGGLE_LAYER, 0xff, (x))
+#define TO(x)           KCX(KCX_TO,           0x1f, (x))
+#define MO(x)           KCX(KCX_MOMENTARY,    0x1f, (x))
+#define TG(x)           KCX(KCX_TOGGLE_LAYER, 0x1f, (x))

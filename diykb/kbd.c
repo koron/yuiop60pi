@@ -7,7 +7,6 @@
 #include "usb_descriptors.h"
 #include "keycodes.h"
 #include "kbd.h"
-#include "backlight.h"
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -84,13 +83,13 @@ void kbd_report_code(uint8_t code, bool on) {
     kbd_changed |= true;
 }
 
+void kbd_init() {
+    // nothing to do (currently)
+}
+
 void kbd_task(uint64_t now) {
     static uint64_t reported_at = 0;
     if (!kbd_changed) {
-        return;
-    }
-    if (now - reported_at < 13*1000) {
-        //printf("hid_task: skipped: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
         return;
     }
     // clean up kbd_code. remove intermediate zeros, padding non-zero
@@ -110,11 +109,13 @@ void kbd_task(uint64_t now) {
         memcpy(kbd_code, tmp, sizeof(kbd_code));
     }
     // send keyboard report with boot protocol.
-    //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
-    tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
-    // clear changed flag, and update last reported timestamp.
-    kbd_changed = false;
-    reported_at = now;
+    if (tud_hid_n_ready(ITF_NUM_HID)) {
+        //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
+        tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+        // clear changed flag, and update last reported timestamp.
+        kbd_changed = false;
+        reported_at = now;
+    }
 }
 
 // Invoked when received GET_REPORT control request
@@ -128,11 +129,6 @@ uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_t
 
 __attribute__((weak)) void kbd_indicator_changed(kbd_indicator_t v) {
     printf("kbd_indicator_changed: %d %d %d %d %d\n", v.num, v.caps, v.scroll, v.compose, v.kana);
-}
-
-__attribute__((weak)) bool kbd_handle_via_command(uint8_t *cmd, uint8_t *data, uint16_t len) {
-    printf("kbd_handle_via_command (null): cmd=%02x size=%d\n", *cmd, len);
-    return false;
 }
 
 // Invoked when received SET_REPORT control request or received data on OUT
@@ -164,18 +160,6 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
         return;
     }
 
-    // handle VIA status report.
-    if (instance == ITF_NUM_VIA && report_id == 0 && report_type == 0) {
-        uint8_t response[CFG_TUD_HID_EP_BUFSIZE];
-        memcpy(response, buffer, bufsize);
-        if (kbd_handle_via_command(&response[0], &response[1], bufsize - 1)) {
-            tud_hid_n_report(ITF_NUM_VIA, 0, response, bufsize);
-        } else {
-            printf("not responded VIA report: %02x %02x ...\n", buffer[0], buffer[1]);
-        }
-        return;
-    }
-
     // dump unknown reports.
     printf("unknown HID set report: instance=%d id=%d type=%d size=%d\n", instance, report_id, report_type, bufsize);
     for (uint16_t i = 0; i < bufsize; i++) {
@@ -184,14 +168,4 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
             printf("\n");
         }
     }
-}
-
-void tud_suspend_cb(bool remote_wakeup_en) {
-    backlight_disable();
-    // FIXME: disable LED array animation.
-}
-
-void tud_resume_cb(void) {
-    backlight_enable();
-    // FIXME: resurrect LED array animation.
 }

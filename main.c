@@ -5,11 +5,8 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "nvm.h"
-#include "onboard_led.h"
 #include "backlight.h"
 #include "matrix.h"
-#include "dynamic_keymap.h"
 #include "layer.h"
 #include "kbd.h"
 #include "ledarray.h"
@@ -40,22 +37,18 @@ void kbd_indicator_changed(kbd_indicator_t v) {
 int main() {
     setup_default_uart();
     printf("\nYUIOP60Pi: start\n");
-    nvm_init();
-    onboard_led_init();
-    backlight_init();
-    dynamic_keymap_init();
-    matrix_init();
     ledarray_init();
+    backlight_init();
     tusb_init();
+    kbd_init();
+    matrix_init();
 
     while(true) {
         uint64_t now = time_us_64();
-        nvm_task(now);
-        onboard_led_task(now);
-        backlight_task(now);
         matrix_task(now);
         kbd_task(now);
-        ledarray_task(now);
         tud_task();
+        backlight_task(now);
+        ledarray_task(now);
     }
 }

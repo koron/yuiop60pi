@@ -8,7 +8,16 @@
 //#define MATRIX_SCAN_PERFORMANCE_COUNT
 
 // MATRIX_SCAN_INTERVAL specify interval of matrix scan in micro-seconds.
-//#define MATRIX_SCAN_PERFORMANCE_COUNT 500
+// When undefined, scan interval is disabled (maximum scan).
+//#define MATRIX_SCAN_INTERVAL 499
+
+// MATRIX_ROW_SELECT_DELAY is interval after a row selected on scan, in
+// micro-seconds. Default is 1.
+//#define MATRIX_ROW_SELECT_DELAY 1
+
+// MATRIX_DEBOUNCE_USEC is inhibition interval (micro-seconds) for changing
+// status of each keys. Default is 10000 (10 millseconds)
+//#define MATRIX_DEBOUNCE_USEC      (10*1000)
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions
@@ -22,6 +31,9 @@ void matrix_init();
 void matrix_task(uint64_t now);
 
 void matrix_get_state(uint8_t *data, uint16_t size);
+
+//////////////////////////////////////////////////////////////////////////////
+// Hooks
 
 // matrix_changed is callbacked when matrix scanner detects a change.
 __attribute__((weak)) void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when);

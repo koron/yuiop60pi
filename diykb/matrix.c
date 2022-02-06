@@ -25,15 +25,14 @@
 # define ROW_NUM    0
 #endif
 
-// SCANSHIFT_INTERVAL is interval for each row scanning of matrix (us).
-#ifndef SCANSHIFT_INTERVAL
-# define SCANSHIFT_INTERVAL 1
+#ifndef MATRIX_ROW_SELECT_DELAY
+# define MATRIX_ROW_SELECT_DELAY 1
 #endif
 
-// DEBOUNCE_USEC is inhibition interval (us) for changing status of each
+// MATRIX_DEBOUNCE_USEC is inhibition interval (us) for changing status of each
 // keys.
-#ifndef DEBOUNCE_USEC
-# define DEBOUNCE_USEC      (10*1000)
+#ifndef MATRIX_DEBOUNCE_USEC
+# define MATRIX_DEBOUNCE_USEC      (10*1000)
 #endif
 
 static const uint col_pins[] = COL_PINS;
@@ -103,7 +102,7 @@ void matrix_task(uint64_t now) {
         // select a row, wait a bit, fetch columns status, unselect a row.
         uint pin = row_pins[nrow];
         gpio_set_dir(pin, GPIO_OUT);
-        sleep_us(SCANSHIFT_INTERVAL);
+        sleep_us(MATRIX_ROW_SELECT_DELAY);
         uint32_t bits = gpio_get_all();
         gpio_set_dir(pin, GPIO_IN);
         // parse columns status as matrix states.
@@ -111,7 +110,7 @@ void matrix_task(uint64_t now) {
             bool on = (bits & (1ul << col_pins[ncol])) == 0;
             if (on != matrix_states[x].on) {
                 uint64_t elapsed = now - matrix_states[x].last;
-                if (elapsed >= DEBOUNCE_USEC) {
+                if (elapsed >= MATRIX_DEBOUNCE_USEC) {
                     matrix_states[x].on = on;
                     matrix_states[x].last = now;
                     matrix_changed(ncol, nrow, on, now);

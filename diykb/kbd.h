@@ -8,6 +8,9 @@ typedef struct {
     bool kana:1;
 } kbd_indicator_t;
 
+//////////////////////////////////////////////////////////////////////////////
+// Functions
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -15,7 +18,10 @@ extern "C" {
 void kbd_init();
 void kbd_task(uint64_t now);
 
-__attribute__((weak)) void kbd_indicator_changed(kbd_indicator_t v);
+//----------------------------------------------------------------------------
+// Hooks
+
+void kbd_indicator_changed(kbd_indicator_t v);
 
 #ifdef __cplusplus
 }

@@ -3,6 +3,9 @@
 extern uint32_t ledarray_state[LEDARRAY_NUM];
 extern bool ledarray_dirty;
 
+//////////////////////////////////////////////////////////////////////////////
+// Functions
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -29,9 +32,12 @@ static inline void ledarray_set_rgb(int i, uint8_t r, uint8_t g, uint8_t b) {
     ledarray_dirty = true;
 }
 
+//----------------------------------------------------------------------------
+// Hooks
+
 // ledarray_resetdelay_completed is callbacked when ledarray_task can be
 // called.
-__attribute__((weak)) void ledarray_resetdelay_completed(void);
+void ledarray_resetdelay_completed(void);
 
 #ifdef __cplusplus
 }

@@ -8,17 +8,8 @@
 #include "config.h"
 #include "backlight.h"
 #include "matrix.h"
-#include "layer.h"
 #include "kbd.h"
 #include "ledarray.h"
-
-void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
-    uint8_t code = layer_get_code(ncol, nrow, on);
-    if (code != 0) {
-        //printf("report code (%-3s): %02x row=%d col=%-2d when=%llu\n", on ? "ON" : "OFF", code, ncol, nrow, when);
-        kbd_report_code(code, on);
-    }
-}
 
 void kbd_indicator_changed(kbd_indicator_t v) {
     // apply lock indicators status to 1st LED.

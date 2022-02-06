@@ -6,7 +6,34 @@
 #include "config.h"
 #include "usb_descriptors.h"
 #include "keycodes.h"
+#include "layer.h"
+#include "action.h"
 #include "kbd.h"
+
+//////////////////////////////////////////////////////////////////////////////
+
+typedef struct {
+    keycode_t code;
+    uint64_t  when;
+} key_state_t;
+
+static key_state_t kbd_states[COL_NUM * ROW_NUM];
+
+void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
+    int index = ncol + nrow * COL_NUM;
+    keycode_t code = on ? layer_get_keycode(ncol, nrow) : kbd_states[index].code;
+    action_event_t ev = {
+        .col = ncol,
+        .row = nrow,
+        .on = on,
+        .kc = code,
+    };
+    action_perform(when, &ev);
+    kbd_states[index].code = code;
+    kbd_states[index].when = when;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -43,8 +70,8 @@ static uint8_t kbd_code2mod(uint8_t code) {
     return mod;
 }
 
-// kbd_report_code composes keyboard report which will be send.
-void kbd_report_code(uint8_t code, bool on) {
+// action_report_code composes keyboard report which will be send.
+void action_report_code(uint8_t code, bool on) {
     //printf("kbd_report_code: %02X %s\n", code, on ? "ON" : "OFF");
     // update modifier states.
     uint8_t mod = kbd_code2mod(code);
@@ -83,8 +110,10 @@ void kbd_report_code(uint8_t code, bool on) {
     kbd_changed |= true;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
 void kbd_init() {
-    // nothing to do (currently)
+    memset(kbd_states, 0, sizeof(kbd_states));
 }
 
 void kbd_task(uint64_t now) {
@@ -117,6 +146,8 @@ void kbd_task(uint64_t now) {
         reported_at = now;
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////
 
 // Invoked when received GET_REPORT control request
 //

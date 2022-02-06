@@ -53,46 +53,26 @@ static keycode_t get_keycode(int layer, uint nrow, uint ncol) {
     return keymaps[layer][nrow][ncol];
 }
 
-static bool is_hid_keycode(keycode_t kc) {
-    return kc >= KC_A && kc <= 0xff;
-}
-
-static bool is_kcx(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_t *value) {
-    if ((kc & (~mask)) != constcode) {
-        return false;
-    }
-    if (value != NULL) {
-        *value = kc & mask;
-    }
-    return true;
-}
-
-static bool process_layer_action(keycode_t kc, bool on) {
-    uint16_t layer = 0;
-    // turn on layer when pressed. (TO)
-    if (is_kcx(kc, KCX_TO, 0x1f, &layer)) {
-        if (on) {
-            layer_state = 0;
-            layer_set_enable((int)layer);
+keycode_t layer_get_keycode(uint ncol, uint nrow) {
+    keycode_t kc = 0;
+    for (uint8_t i = LAYER_MAXNUM; i >= 0; i--) {
+        if (!layer_is_enabled(i)) {
+            continue;
         }
-        return true;
-    }
-    // momentary turn layer on. (MO)
-    if (is_kcx(kc, KCX_MOMENTARY, 0x1f, &layer)) {
-        layer_set((int)layer, on);
-        return true;
-    }
-    // toggle layer on/off. (TG)
-    if (is_kcx(kc, KCX_TOGGLE_LAYER, 0x1f, &layer)) {
-        if (on) {
-            layer_toggle((int)layer);
+        kc = get_keycode(i, nrow, ncol);
+        // continue when kc is KC_TRANSPARENT.
+        if (kc != KC_TRANSPARENT) {
+            break;
         }
-        return true;
     }
-    // TODO: implement other layer operations.
-    return false;
+    // no HID code mapped.
+    if (kc == KC_TRANSPARENT) {
+        kc = KC_NO;
+    }
+    return kc;
 }
 
+#if 0
 uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     keycode_t kc = 0;
     for (uint8_t i = LAYER_MAXNUM; i >= 0; i--) {
@@ -121,3 +101,4 @@ uint8_t layer_get_code(uint ncol, uint nrow, bool on) {
     // no actions mapped.
     return 0;
 }
+#endif

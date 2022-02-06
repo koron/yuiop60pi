@@ -14,7 +14,6 @@ extern "C" {
 
 void kbd_init();
 void kbd_task(uint64_t now);
-void kbd_report_code(uint8_t code, bool on);
 
 __attribute__((weak)) void kbd_indicator_changed(kbd_indicator_t v);
 

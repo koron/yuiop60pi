@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+//////////////////////////////////////////////////////////////////////////////
+// Key codes
+
 typedef uint16_t keycode_t;
 
 // HID Usage Table for USB Version 1.21
@@ -300,3 +303,17 @@ enum {
 #define TO(x)           KCX(KCX_TO,           0x1f, (x))
 #define MO(x)           KCX(KCX_MOMENTARY,    0x1f, (x))
 #define TG(x)           KCX(KCX_TOGGLE_LAYER, 0x1f, (x))
+
+//////////////////////////////////////////////////////////////////////////////
+// Functions
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+bool kc_is_hid(keycode_t kc);
+bool kc_is_ext(keycode_t kc, keycode_t constcode, keycode_t mask, uint16_t *value);
+
+#ifdef __cplusplus
+}
+#endif

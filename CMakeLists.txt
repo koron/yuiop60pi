@@ -33,7 +33,7 @@ add_executable(yuiop60pi
 #set_property(TARGET yuiop60pi PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 pico_set_program_name(yuiop60pi "yuiop60pi")
-pico_set_program_version(yuiop60pi "0.3")
+pico_set_program_version(yuiop60pi "0.2")
 
 pico_enable_stdio_uart(yuiop60pi 1)
 pico_enable_stdio_usb(yuiop60pi 0)

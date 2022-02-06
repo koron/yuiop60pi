@@ -45,6 +45,7 @@ target_link_libraries(yuiop60pi
 	pico_stdlib
 	pico_unique_id
 	pico_time
+	pico_multicore
 	hardware_pio
 	hardware_dma
 	tinyusb_device

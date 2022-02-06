@@ -20,7 +20,9 @@ add_executable(yuiop60pi
 	keymap.c
 	diykb/usb_descriptors.c
 	diykb/matrix.c
+	diykb/keycode.c
 	diykb/layer.c
+	diykb/action.c
 	diykb/kbd.c
 	diykb/ledarray.c
 	# WIP
@@ -31,7 +33,7 @@ add_executable(yuiop60pi
 #set_property(TARGET yuiop60pi PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 pico_set_program_name(yuiop60pi "yuiop60pi")
-pico_set_program_version(yuiop60pi "0.2")
+pico_set_program_version(yuiop60pi "0.3")
 
 pico_enable_stdio_uart(yuiop60pi 1)
 pico_enable_stdio_usb(yuiop60pi 0)
@@ -45,6 +47,7 @@ target_link_libraries(yuiop60pi
 	pico_stdlib
 	pico_unique_id
 	pico_time
+	pico_multicore
 	hardware_pio
 	hardware_dma
 	tinyusb_device

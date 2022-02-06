@@ -48,4 +48,10 @@
 //////////////////////////////////////////////////////////////////////////////
 // development flags
 
-//#define MATRIX_TASK_PERFORMANCE_COUNT
+//#define MATRIX_SCAN_PERFORMANCE_COUNT
+
+#define MATRIX_SCAN_INTERVAL 499
+
+//#define MATRIX_ROW_SELECT_DELAY 0
+
+//#define MATRIX_DEBOUNCE_USEC      (10*1000)

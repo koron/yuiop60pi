@@ -5,8 +5,35 @@
 
 #include "config.h"
 #include "usb_descriptors.h"
-#include "keycodes.h"
+#include "keycode.h"
+#include "layer.h"
+#include "action.h"
 #include "kbd.h"
+
+//////////////////////////////////////////////////////////////////////////////
+
+typedef struct {
+    keycode_t code;
+    uint64_t  when;
+} key_state_t;
+
+static key_state_t kbd_states[COL_NUM * ROW_NUM];
+
+void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
+    int index = ncol + nrow * COL_NUM;
+    keycode_t code = on ? layer_get_keycode(ncol, nrow) : kbd_states[index].code;
+    action_event_t ev = {
+        .col = ncol,
+        .row = nrow,
+        .on = on,
+        .kc = code,
+    };
+    action_perform(when, &ev);
+    kbd_states[index].code = code;
+    kbd_states[index].when = when;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
@@ -43,8 +70,8 @@ static uint8_t kbd_code2mod(uint8_t code) {
     return mod;
 }
 
-// kbd_report_code composes keyboard report which will be send.
-void kbd_report_code(uint8_t code, bool on) {
+// action_report_code composes keyboard report which will be send.
+void action_report_code(uint8_t code, bool on) {
     //printf("kbd_report_code: %02X %s\n", code, on ? "ON" : "OFF");
     // update modifier states.
     uint8_t mod = kbd_code2mod(code);
@@ -83,40 +110,7 @@ void kbd_report_code(uint8_t code, bool on) {
     kbd_changed |= true;
 }
 
-void kbd_init() {
-    // nothing to do (currently)
-}
-
-void kbd_task(uint64_t now) {
-    static uint64_t reported_at = 0;
-    if (!kbd_changed) {
-        return;
-    }
-    // clean up kbd_code. remove intermediate zeros, padding non-zero
-    // codes to left.
-    bool aligned = false;
-    uint8_t tmp[6] = {0};
-    for (int i = 0, j = 0; i < count_of(kbd_code); i++) {
-        if (kbd_code[i] != 0) {
-            tmp[j] = kbd_code[i];
-            if (j != i) {
-                aligned |= true;
-            }
-            j++;
-        }
-    }
-    if (aligned) {
-        memcpy(kbd_code, tmp, sizeof(kbd_code));
-    }
-    // send keyboard report with boot protocol.
-    if (tud_hid_n_ready(ITF_NUM_HID)) {
-        //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
-        tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
-        // clear changed flag, and update last reported timestamp.
-        kbd_changed = false;
-        reported_at = now;
-    }
-}
+//////////////////////////////////////////////////////////////////////////////
 
 // Invoked when received GET_REPORT control request
 //
@@ -167,5 +161,42 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
         if ((i+1) % 16 == 0 || i == bufsize-1) {
             printf("\n");
         }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void kbd_init() {
+    memset(kbd_states, 0, sizeof(kbd_states));
+}
+
+void kbd_task(uint64_t now) {
+    static uint64_t reported_at = 0;
+    if (!kbd_changed) {
+        return;
+    }
+    // clean up kbd_code. remove intermediate zeros, padding non-zero
+    // codes to left.
+    bool aligned = false;
+    uint8_t tmp[6] = {0};
+    for (int i = 0, j = 0; i < count_of(kbd_code); i++) {
+        if (kbd_code[i] != 0) {
+            tmp[j] = kbd_code[i];
+            if (j != i) {
+                aligned |= true;
+            }
+            j++;
+        }
+    }
+    if (aligned) {
+        memcpy(kbd_code, tmp, sizeof(kbd_code));
+    }
+    // send keyboard report with boot protocol.
+    if (tud_hid_n_ready(ITF_NUM_HID)) {
+        //printf("hid_task: keyboard: %02X (%02X %02X %02X %02X %02X %02X) when=%llu diff=%llu\n", kbd_mod, kbd_code[0], kbd_code[1], kbd_code[2], kbd_code[3], kbd_code[4], kbd_code[5], now, now - reported_at);
+        tud_hid_n_keyboard_report(ITF_NUM_HID, REPORT_ID_KEYBOARD, kbd_mod, kbd_code);
+        // clear changed flag, and update last reported timestamp.
+        kbd_changed = false;
+        reported_at = now;
     }
 }

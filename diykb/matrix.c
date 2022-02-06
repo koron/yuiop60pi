@@ -25,15 +25,14 @@
 # define ROW_NUM    0
 #endif
 
-// SCANSHIFT_INTERVAL is interval for each row scanning of matrix (us).
-#ifndef SCANSHIFT_INTERVAL
-# define SCANSHIFT_INTERVAL 1
+#ifndef MATRIX_ROW_SELECT_DELAY
+# define MATRIX_ROW_SELECT_DELAY 1
 #endif
 
-// DEBOUNCE_USEC is inhibition interval (us) for changing status of each
+// MATRIX_DEBOUNCE_USEC is inhibition interval (us) for changing status of each
 // keys.
-#ifndef DEBOUNCE_USEC
-# define DEBOUNCE_USEC      (10*1000)
+#ifndef MATRIX_DEBOUNCE_USEC
+# define MATRIX_DEBOUNCE_USEC      (10*1000)
 #endif
 
 static const uint col_pins[] = COL_PINS;
@@ -77,12 +76,12 @@ __attribute__((weak)) void matrix_suppressed(uint ncol, uint nrow, bool on, uint
 }
 
 static void performance_count(uint64_t now) {
-#ifdef MATRIX_TASK_PERFORMANCE_COUNT
+#ifdef MATRIX_SCAN_PERFORMANCE_COUNT
     static uint64_t count = 0;
     static uint64_t last = 0;
     ++count;
     if (now - last > 1000000) {
-        printf("matrix_task: performance_count: %llu/sec\n", count);
+        printf("matrix: scan performance_count: %llu/sec\n", count);
         count = 0;
         last = now;
     }
@@ -91,12 +90,19 @@ static void performance_count(uint64_t now) {
 
 // matrix_task scan whole switch matrix.
 void matrix_task(uint64_t now) {
+#if defined(MATRIX_SCAN_INTERVAL) && MATRIX_SCAN_INTERVAL > 0
+    static uint64_t last = 0;
+    if (now - last < MATRIX_SCAN_INTERVAL) {
+        return;
+    }
+    last = now;
+#endif
     uint x = 0;
     for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
         // select a row, wait a bit, fetch columns status, unselect a row.
         uint pin = row_pins[nrow];
         gpio_set_dir(pin, GPIO_OUT);
-        sleep_us(SCANSHIFT_INTERVAL);
+        sleep_us(MATRIX_ROW_SELECT_DELAY);
         uint32_t bits = gpio_get_all();
         gpio_set_dir(pin, GPIO_IN);
         // parse columns status as matrix states.
@@ -104,7 +110,7 @@ void matrix_task(uint64_t now) {
             bool on = (bits & (1ul << col_pins[ncol])) == 0;
             if (on != matrix_states[x].on) {
                 uint64_t elapsed = now - matrix_states[x].last;
-                if (elapsed >= DEBOUNCE_USEC) {
+                if (elapsed >= MATRIX_DEBOUNCE_USEC) {
                     matrix_states[x].on = on;
                     matrix_states[x].last = now;
                     matrix_changed(ncol, nrow, on, now);

@@ -48,4 +48,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // development flags
 
-//#define MATRIX_TASK_PERFORMANCE_COUNT
+#define MATRIX_SCAN_PERFORMANCE_COUNT
+
+#define MATRIX_SCAN_INTERVAL 497

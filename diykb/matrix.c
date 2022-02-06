@@ -77,12 +77,12 @@ __attribute__((weak)) void matrix_suppressed(uint ncol, uint nrow, bool on, uint
 }
 
 static void performance_count(uint64_t now) {
-#ifdef MATRIX_TASK_PERFORMANCE_COUNT
+#ifdef MATRIX_SCAN_PERFORMANCE_COUNT
     static uint64_t count = 0;
     static uint64_t last = 0;
     ++count;
     if (now - last > 1000000) {
-        printf("matrix_task: performance_count: %llu/sec\n", count);
+        printf("matrix: scan performance_count: %llu/sec\n", count);
         count = 0;
         last = now;
     }
@@ -91,6 +91,13 @@ static void performance_count(uint64_t now) {
 
 // matrix_task scan whole switch matrix.
 void matrix_task(uint64_t now) {
+#if defined(MATRIX_SCAN_INTERVAL) && MATRIX_SCAN_INTERVAL > 0
+    static uint64_t last = 0;
+    if (now - last < MATRIX_SCAN_INTERVAL) {
+        return;
+    }
+    last = now;
+#endif
     uint x = 0;
     for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
         // select a row, wait a bit, fetch columns status, unselect a row.

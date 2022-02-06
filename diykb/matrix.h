@@ -1,5 +1,18 @@
 #pragma once
 
+//////////////////////////////////////////////////////////////////////////////
+// Options (configure in your config.h)
+
+// MATRIX_SCAN_PERFORMANCE_COUNT enables scan performance counter. It shows
+// count of matrix scan to console (UART0) each a second.
+//#define MATRIX_SCAN_PERFORMANCE_COUNT
+
+// MATRIX_SCAN_INTERVAL specify interval of matrix scan in micro-seconds.
+//#define MATRIX_SCAN_PERFORMANCE_COUNT 500
+
+//////////////////////////////////////////////////////////////////////////////
+// Functions
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -2,7 +2,7 @@
 
 #include "pico/stdlib.h"
 
-#include "keycodes.h"
+#include "keycode.h"
 #include "layer.h"
 #include "action.h"
 

@@ -10,6 +10,10 @@ __attribute__((weak)) void action_report_code(uint8_t code, bool on) {
     printf("action_report_code: code=%02x on=%d\n", code, on);
 }
 
+__attribute__((weak)) void action_report_oneshot(uint8_t code) {
+    printf("action_report_oneshot: code=%02x\n", code);
+}
+
 bool action_layer(uint64_t when, action_event_t *ev) {
     uint16_t layer = 0;
     // turn on layer when pressed. (TO)

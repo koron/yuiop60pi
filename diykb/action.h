@@ -22,6 +22,8 @@ bool action_layer(uint64_t when, action_event_t *ev);
 
 void action_report_code(uint8_t code, bool on);
 
+void action_report_oneshot(uint8_t code);
+
 #ifdef __cplusplus
 }
 #endif

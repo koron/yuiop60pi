@@ -39,6 +39,8 @@ static bool kbd_changed = false;
 static uint8_t kbd_mod = 0;
 static uint8_t kbd_code[6] = {0};
 
+static uint8_t kbd_oneshot[14] = {0};
+
 static uint8_t kbd_code2mod(uint8_t code) {
     uint8_t mod = 0;
     switch (code) {
@@ -70,44 +72,71 @@ static uint8_t kbd_code2mod(uint8_t code) {
     return mod;
 }
 
-// action_report_code composes keyboard report which will be send.
-void action_report_code(uint8_t code, bool on) {
-    //printf("kbd_report_code: %02X %s\n", code, on ? "ON" : "OFF");
-    // update modifier states.
+static void kbd_code_scan(uint8_t code, int *found, int *vacant) {
+    int f = -1, v = -1;
+    for (int i = 0; i < count_of(kbd_code); i++) {
+        if (v < 0 && kbd_code[i] == 0) {
+            v = i;
+        }
+        if (f < 0 && kbd_code[i] == code) {
+            f = i;
+        }
+    }
+    *found = f;
+    *vacant = v;
+}
+
+static bool kbd_code_add(uint8_t code) {
+    // update modifier flags.
     uint8_t mod = kbd_code2mod(code);
     if (mod != 0) {
-        if (on) {
-            kbd_mod |= mod;
-        } else {
-            kbd_mod &= ~mod;
-        }
-        kbd_changed |= true;
-        return;
+        uint8_t old = kbd_mod;
+        kbd_mod |= mod;
+        return kbd_mod != old;
     }
-    // update kbd_code.
-    int found = -1, vacant = -1;
-    for (int i = 0; i < count_of(kbd_code); i++) {
-        if (vacant < 0 && kbd_code[i] == 0) {
-            vacant = i;
-        }
-        if (found < 0 && kbd_code[i] == code) {
-            found = i;
-        }
-    }
-    // when key up.
-    if (!on) {
-        if (found >= 0) {
-            kbd_code[found] = 0;
-            kbd_changed |= true;
-        }
-        return;
-    }
-    // when key down.
+    int found, vacant;
+    kbd_code_scan(code, &found, &vacant);
     if (found >= 0 || vacant < 0) {
-        return;
+        return false;
     }
     kbd_code[vacant] = code;
-    kbd_changed |= true;
+    return true;
+}
+
+static bool kbd_code_del(uint8_t code) {
+    uint8_t mod = kbd_code2mod(code);
+    if (mod != 0) {
+        uint8_t old = kbd_mod;
+        kbd_mod &= ~mod;
+        return kbd_mod != old;
+    }
+    int found, vacant;
+    kbd_code_scan(code, &found, &vacant);
+    if (found < 0) {
+        return false;
+    }
+    kbd_code[found] = 0;
+    return true;
+}
+
+// action_report_code composes keyboard report which will be send.
+void action_report_code(uint8_t code, bool on) {
+    //printf("action_report_code: %02X %s\n", code, on ? "ON" : "OFF");
+    kbd_changed |= on ? kbd_code_add(code) : kbd_code_del(code);
+}
+
+void action_report_oneshot(uint8_t code) {
+    if (!kbd_code_add(code)) {
+        return;
+    }
+    for (int i = 0; i < count_of(kbd_oneshot); i++) {
+        if (kbd_oneshot[i] == 0) {
+            kbd_oneshot[i] = code;
+            kbd_changed |= true;
+            return;
+        }
+    }
+    kbd_code_del(code);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -198,5 +227,10 @@ void kbd_task(uint64_t now) {
         // clear changed flag, and update last reported timestamp.
         kbd_changed = false;
         reported_at = now;
+        // clear oneshot keys
+        for (int i = 0; i < count_of(kbd_oneshot) && kbd_oneshot[i] != 0; i++) {
+            kbd_changed |= kbd_code_del(kbd_oneshot[i]);
+            kbd_oneshot[i] = 0;
+        }
     }
 }

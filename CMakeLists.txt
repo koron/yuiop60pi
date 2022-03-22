@@ -19,7 +19,7 @@ add_executable(yuiop60pi
 	main.c
 	keymap.c
 	diykb/usb_descriptors.c
-	diykb/matrix.c
+	diykb/matrix_duplex.c
 	diykb/keycode.c
 	diykb/layer.c
 	diykb/action.c

@@ -88,17 +88,16 @@ static void performance_count(uint64_t now) {
 #endif
 }
 
-static void set_state(uint64_t now, uint row, uint col, uint side, bool on) {
-    uint vrow = row + side * ROW_NUM;
-    uint x = vrow * COL_NUM + col;
+static void set_state(uint64_t now, uint row, uint col, bool on) {
+    uint x = row * COL_NUM + col;
     if (on != matrix_states[x].on) {
         uint64_t elapsed = now - matrix_states[x].last;
         if (elapsed >= MATRIX_DEBOUNCE_USEC) {
             matrix_states[x].on = on;
             matrix_states[x].last = now;
-            matrix_changed(col, vrow , on, now);
+            matrix_changed(col, row , on, now);
         } else {
-            matrix_suppressed(col, vrow, on, now, matrix_states[x].last, elapsed);
+            matrix_suppressed(col, row, on, now, matrix_states[x].last, elapsed);
         }
     }
     x++;
@@ -125,7 +124,7 @@ void matrix_task(uint64_t now) {
         // parse columns status as matrix states.
         for (uint ncol = 0; ncol < COL_NUM; ncol++) {
             bool on = (bits & (1ul << col_pins[ncol])) == 0;
-            set_state(now, nrow, ncol, 0, on);
+            set_state(now, nrow, ncol, on);
         }
     }
 
@@ -140,7 +139,7 @@ void matrix_task(uint64_t now) {
         // parse rows status as matrix states.
         for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
             bool on = (bits & (1ul << row_pins[nrow])) == 0;
-            set_state(now, nrow, ncol, 1, on);
+            set_state(now, nrow + ROW_NUM, ncol, on);
         }
     }
 

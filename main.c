@@ -27,20 +27,16 @@ void kbd_indicator_changed(kbd_indicator_t v) {
 }
 
 static void core1_main(void) {
-    printf("YUIOP60Pi: core1 launched\n");
     while(true) {
         uint64_t now = time_us_64();
-        backlight_task(now);
+        //backlight_task(now);
         ledarray_task(now);
     }
 }
 
 int main() {
-    setup_default_uart();
-    printf("\nYUIOP60Pi: start\n");
-
     ledarray_init();
-    backlight_init();
+    //backlight_init();
     tusb_init();
     kbd_init();
     matrix_init();

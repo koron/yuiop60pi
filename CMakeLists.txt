@@ -8,14 +8,14 @@ set(CMAKE_CXX_STANDARD 17)
 # Pull in Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(yuiop60pi C CXX ASM)
+project(olsk60 C CXX ASM)
 
 # Initialise the Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(yuiop60pi
+add_executable(olsk60
 	main.c
 	keymap.c
 	diykb/usb_descriptors.c
@@ -25,25 +25,23 @@ add_executable(yuiop60pi
 	diykb/action.c
 	diykb/kbd.c
 	diykb/ledarray.c
-	# WIP
-	diykb/backlight.c
 	)
 
 # Link Time Optimization is not supported yet.
-#set_property(TARGET yuiop60pi PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+#set_property(TARGET olsk60 PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-pico_set_program_name(yuiop60pi "yuiop60pi")
-pico_set_program_version(yuiop60pi "0.2")
+pico_set_program_name(olsk60 "olsk60")
+pico_set_program_version(olsk60 "0.2")
 
-pico_enable_stdio_uart(yuiop60pi 1)
-pico_enable_stdio_usb(yuiop60pi 0)
+pico_enable_stdio_uart(olsk60 0)
+pico_enable_stdio_usb(olsk60 0)
 
-target_include_directories(yuiop60pi PRIVATE
+target_include_directories(olsk60 PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}
 	${CMAKE_CURRENT_LIST_DIR}/diykb
 	)
 
-target_link_libraries(yuiop60pi
+target_link_libraries(olsk60
 	pico_stdlib
 	pico_unique_id
 	pico_time
@@ -54,4 +52,4 @@ target_link_libraries(yuiop60pi
 	tinyusb_board
 	)
 
-pico_add_extra_outputs(yuiop60pi)
+pico_add_extra_outputs(olsk60)

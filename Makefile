@@ -1,10 +1,10 @@
-default: build/yuiop60pi.uf2
+default: build/olsk60.uf2
 
 build/Makefile:
 	cmake -B build -DCMAKE_DEPENDS_USE_COMPILER=OFF
 
-.PHONY: build/yuiop60pi.uf2
-build/yuiop60pi.uf2: build/Makefile
+.PHONY: build/olsk60.uf2
+build/olsk60.uf2: build/Makefile
 	make -j8 -C build
 
 .PHONY: clean

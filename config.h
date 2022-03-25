@@ -3,18 +3,18 @@
 //////////////////////////////////////////////////////////////////////////////
 // for usb_descriptors.c
 
-#define VENDOR_ID       0x7890
-#define PRODUCT_ID      0x000a
+#define VENDOR_ID       0xbeef
+#define PRODUCT_ID      0x0001
 #define DEVICE_VER      0x0001
-#define MANUFACTURER    koron
-#define PRODUCT         YUIOP60Pi
+#define MANUFACTURER    techmech
+#define PRODUCT         OLSK60
 
 //////////////////////////////////////////////////////////////////////////////
 // for matrix.c
 
-#define COL_PINS    { 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10 }
-#define COL_NUM     15
-#define ROW_PINS    { 8, 7, 6, 5, 4 }
+#define COL_PINS    { 29, 28, 27, 26, 18, 20, 19 }
+#define COL_NUM     7
+#define ROW_PINS    { 2, 3, 4, 5, 6 }
 #define ROW_NUM     5
 
 //define SCANSHIFT_INTERVAL     10
@@ -23,26 +23,26 @@
 //////////////////////////////////////////////////////////////////////////////
 // for ledarray.c
 
-#define LEDARRAY_NUM    56
-#define LEDARRAY_PIN    9
+#define LEDARRAY_NUM    1
+#define LEDARRAY_PIN    0
 #define LEDARRAY_PIO	pio0
 
 //////////////////////////////////////////////////////////////////////////////
 // for keymap.c
 
 #define LAYOUT( \
-    K01, K02, K03, K04, K05, K06, K07, K08, K09, K10, K11, K12, K13, K14, K15, \
-    K16,   K17, K18, K19, K20, K21, K22, K23, K24, K25, K26, K27, K28,    K29, \
-    K30,    K31, K32, K33, K34, K35, K36, K37, K38, K39, K40,  K41,       K42, \
-    K43,      K44, K45, K46, K47, K48, K49, K50, K51, K52, K53,      K54, K55, \
-           K56,   K57,             K58,                 K59, K60 \
+    K01, K06, K11, K16, K20, K25, K31, K35, K40, K44, K49, K54,      \
+    K02, K07, K12, K17, K21, K26, K32, K36, K41, K45, K50, K55, K59, \
+    K03, K08, K13, K18, K22, K27, K33, K37, K42, K46, K51, K56,      \
+    K04, K09, K14, K19, K23, K28, K34, K38, K43, K47, K52, K57, K60, \
+    K05, K10, K15     , K24, K30     , K39     , K48, K53, K58, K61  \
 ) \
 { \
-    {   K01,   K02,   K03,   K04,   K05,   K06,   K07,   K08,   K09,   K10,   K11,   K12,   K13,   K14,   K15 }, \
-    {   K16,   K17,   K18,   K19,   K20,   K21,   K22,   K23,   K24,   K25,   K26,   K27,   K28, KC_NO,   K29 }, \
-    {   K30,   K31,   K32,   K33,   K34,   K35,   K36,   K37,   K38,   K39,   K40,   K41, KC_NO, KC_NO,   K42 }, \
-    {   K43, KC_NO,   K44,   K45,   K46,   K47,   K48,   K49,   K50,   K51,   K52,   K53, KC_NO,   K54,   K55 }, \
-    { KC_NO,   K56,   K57, KC_NO, KC_NO, KC_NO,   K58, KC_NO, KC_NO, KC_NO,   K59,   K60, KC_NO, KC_NO, KC_NO }  \
+    {   K01,   K06,   K11,   K16,   K20,   K25, KC_NO,   K31,   K35,   K40,   K44,   K49,   K54, KC_NO }, \
+    {   K02,   K07,   K12,   K17,   K21,   K26, KC_NO,   K32,   K36,   K41,   K45,   K50,   K55,   K59 }, \
+    {   K03,   K08,   K13,   K18,   K22,   K27, KC_NO,   K33,   K37,   K42,   K46,   K51,   K56, KC_NO }, \
+    {   K04,   K09,   K14,   K19,   K23,   K28, KC_NO,   K34,   K38,   K43,   K47,   K52,   K57,   K60 }, \
+    {   K05,   K10,   K15, KC_NO,   K24,   K30, KC_NO, KC_NO,   K39, KC_NO,   K48,   K53,   K58,   K61 }, \
 }
 
 //////////////////////////////////////////////////////////////////////////////

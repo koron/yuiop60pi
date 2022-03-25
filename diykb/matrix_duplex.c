@@ -45,6 +45,7 @@ typedef struct {
 
 static scan_state matrix_states[COL_NUM * ROW_NUM * 2];
 
+#if 0
 // matrix_get_state fetches whole matrix status (on/off) as bits form, into
 // limited buffer in "size" bytes.
 void matrix_get_state(uint8_t *data, uint16_t size) {
@@ -66,6 +67,7 @@ void matrix_get_state(uint8_t *data, uint16_t size) {
         }
     }
 }
+#endif
 
 __attribute__((weak)) void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
     printf("matrix_changed: col=%d row=%d %s when=%llu\n", ncol, nrow, on ? "ON" : "OFF", when);
@@ -89,7 +91,7 @@ static void performance_count(uint64_t now) {
 }
 
 static void set_state(uint64_t now, uint row, uint col, bool on) {
-    uint x = row * COL_NUM + col;
+    uint x = row * COL_NUM * 2 + col;
     if (on != matrix_states[x].on) {
         uint64_t elapsed = now - matrix_states[x].last;
         if (elapsed >= MATRIX_DEBOUNCE_USEC) {
@@ -139,7 +141,7 @@ void matrix_task(uint64_t now) {
         // parse rows status as matrix states.
         for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
             bool on = (bits & (1ul << row_pins[nrow])) == 0;
-            set_state(now, nrow + ROW_NUM, ncol, on);
+            set_state(now, nrow, ncol + COL_NUM, on);
         }
     }
 

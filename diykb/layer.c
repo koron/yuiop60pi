@@ -46,20 +46,20 @@ void layer_toggle(int layer) {
     layer_set(layer, !layer_is_enabled(layer));
 }
 
-static keycode_t get_keycode(int layer, uint nrow, uint ncol) {
+static keycode_t get_keycode(int layer, uint knum) {
     if (layer < 0 || layer > KEYMAP_LAYER_MAX || keymaps[layer] == 0) {
         return KC_NO;
     }
-    return keymaps[layer][nrow][ncol];
+    return keymaps[layer][knum];
 }
 
-keycode_t layer_get_keycode(uint ncol, uint nrow) {
+keycode_t layer_get_keycode(uint knum) {
     keycode_t kc = 0;
     for (uint8_t i = LAYER_MAXNUM; i >= 0; i--) {
         if (!layer_is_enabled(i)) {
             continue;
         }
-        kc = get_keycode(i, nrow, ncol);
+        kc = get_keycode(i, knum);
         // continue when kc is KC_TRANSPARENT.
         if (kc != KC_TRANSPARENT) {
             break;

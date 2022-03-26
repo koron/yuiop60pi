@@ -18,4 +18,4 @@ distclean:
 
 .PHONY: tags
 tags:
-	ctags --exclude=build/ -R .
+	ctags --exclude=build/* --exclude=tmp/* -R .

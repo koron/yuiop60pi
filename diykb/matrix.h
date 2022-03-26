@@ -33,13 +33,13 @@ void matrix_task(uint64_t now);
 //----------------------------------------------------------------------------
 // Hooks
 
-// matrix_keystate_changed is callbacked when matrix scanner detects a change
+// matrix_changed is callbacked when matrix scanner detects a change
 // of key state.
-void matrix_keystate_changed(uint64_t when, int knum, bool on);
+void matrix_changed(uint64_t when, uint knum, bool on);
 
-// matrix_keystate_suppressed is callbacked when matrix scanner detects
+// matrix_suppressed is callbacked when matrix scanner detects
 // chattering and suppresses the change of a key state.
-void matrix_keystate_suppressed(uint64_t when, int knum, bool on, uint64_t last, uint64_t elapsed);
+void matrix_suppressed(uint64_t when, uint knum, bool on, uint64_t last, uint64_t elapsed);
 
 #ifdef __cplusplus
 }

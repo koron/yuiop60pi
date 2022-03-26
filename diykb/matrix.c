@@ -21,35 +21,33 @@
 # define MATRIX_DEBOUNCE_USEC      (10*1000)
 #endif
 
-static const uint8_t matrix_keys[][2] = MATRIX_KEYS;
-
-#define KEY_COUNT count_of(matrix_keys)
+static const uint8_t matrix_keys[KEY_NUM][2] = MATRIX_KEYS;
 
 typedef struct {
     bool     on:1;
     uint64_t last:63;
 } matrix_keystate_t;
 
-matrix_keystate_t matrix_keystates[KEY_COUNT] = {0};
+matrix_keystate_t matrix_keystates[KEY_NUM] = {0};
 
-__attribute__((weak)) void matrix_keystate_changed(uint64_t when, int knum, bool on) {
-    printf("matrix_keystate_changed: knum=%d %s when=%llu\n", knum, on ? "ON" : "OFF", when);
+__attribute__((weak)) void matrix_changed(uint64_t when, uint knum, bool on) {
+    printf("matrix_changed: knum=%d %s when=%llu\n", knum, on ? "ON" : "OFF", when);
 }
 
-__attribute__((weak)) void matrix_keystate_suppressed(uint64_t when, int knum, bool on, uint64_t last, uint64_t elapsed) {
+__attribute__((weak)) void matrix_suppressed(uint64_t when, uint knum, bool on, uint64_t last, uint64_t elapsed) {
     printf("matrix_suppressed: knum=%d %s when=%llu last=%llu elapsed=%llu\n", knum, on ? "ON" : "OFF", when, last, elapsed);
 }
 
-static void matrix_set_keystate(uint64_t now, int knum, bool on) {
+static void matrix_set_keystate(uint64_t now, uint knum, bool on) {
     if (on != matrix_keystates[knum].on) {
         uint64_t last = matrix_keystates[knum].last << 1;
         uint64_t elapsed = now - last;
         if (elapsed >= MATRIX_DEBOUNCE_USEC) {
             matrix_keystates[knum].on = on;
             matrix_keystates[knum].last = now >> 1;
-            matrix_keystate_changed(now, knum, on);
+            matrix_changed(now, knum, on);
         } else {
-            matrix_keystate_suppressed(now, knum, on, last, elapsed);
+            matrix_suppressed(now, knum, on, last, elapsed);
         }
     }
 }
@@ -57,7 +55,7 @@ static void matrix_set_keystate(uint64_t now, int knum, bool on) {
 static void matrix_scan_keys(uint64_t now) {
     uint32_t scanned = 0;
     uint32_t states[32] = {0};
-    for (int i = 0; i < KEY_COUNT; i++) {
+    for (uint i = 0; i < KEY_NUM; i++) {
         uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
         if ((scanned & (1 << p0)) == 0) {
             gpio_set_dir(p0, GPIO_OUT);
@@ -107,11 +105,11 @@ static void matrix_gpio_init(uint gpio) {
 }
 
 void matrix_init() {
-    //printf("matrix_init: KEY_COUNT=%d sizeof(matrix_keystates)=%d\n", KEY_COUNT, sizeof(matrix_keystates));
+    //printf("matrix_init: KEY_NUM=%d sizeof(matrix_keystates)=%d\n", KEY_NUM, sizeof(matrix_keystates));
 
     // setup all pins for GPIO.
     uint32_t inited_pins = 0;
-    for (int i = 0; i < KEY_COUNT; i++) {
+    for (uint i = 0; i < KEY_NUM; i++) {
         uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
         if ((inited_pins & (1 << p0)) == 0) {
             matrix_gpio_init(p0);

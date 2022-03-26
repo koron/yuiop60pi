@@ -6,23 +6,9 @@
 
 #include "config.h"
 
-#ifndef COL_PINS
-# pragma GCC error "COL_PINS should be defined in config.h"
-# define COL_PINS   {}
-#endif
-#ifndef COL_NUM
-# pragma GCC error "COL_NUM should be defined in config.h"
-# define COL_NUM    0
-#elif COL_NUM > 32
-# pragma GCC error "COL_NUM should be <= 32"
-#endif
-#ifndef ROW_PINS
-# pragma GCC error "ROW_PINS should be defined in config.h"
-# define ROW_PINS   {}
-#endif
-#ifndef ROW_NUM
-# pragma GCC error "ROW_NUM should be defined in config.h"
-# define ROW_NUM    0
+#ifndef MATRIX_KEYS
+# pragma GCC error "MATRIX_KEYS should be defined in config.h"
+# define MATRIX_KEYS {}
 #endif
 
 #ifndef MATRIX_ROW_SELECT_DELAY
@@ -35,47 +21,57 @@
 # define MATRIX_DEBOUNCE_USEC      (10*1000)
 #endif
 
-static const uint col_pins[] = COL_PINS;
-static const uint row_pins[] = ROW_PINS;
+static const uint8_t matrix_keys[][2] = MATRIX_KEYS;
+
+#define KEY_COUNT count_of(matrix_keys)
 
 typedef struct {
-    bool     on;
-    uint64_t last;
-} scan_state;
+    bool     on:1;
+    uint64_t last:63;
+} matrix_keystate_t;
 
-static scan_state matrix_states[COL_NUM * ROW_NUM];
+matrix_keystate_t matrix_keystates[KEY_COUNT] = {0};
 
-// matrix_get_state fetches whole matrix status (on/off) as bits form, into
-// limited buffer in "size" bytes.
-void matrix_get_state(uint8_t *data, uint16_t size) {
-    const int ROW_BYTES = (COL_NUM + 7) / 8; // 1-4
-    uint x = 0;
-    uint16_t w = 0;
-    for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
-        uint32_t curr = 0;
-        for (uint ncol = 0; ncol < COL_NUM; ncol++) {
-            if (matrix_states[x].on) {
-                curr |= 1 << ncol;
-            }
-            x++;
-        }
-        curr <<= 8 * (4 - ROW_BYTES);
-        for (uint8_t i = 0; i < ROW_BYTES && w < size; i++) {
-            data[w++] = (curr >> 24) & 0xff;
-            curr <<= 8;
+__attribute__((weak)) void matrix_keystate_changed(uint64_t when, int knum, bool on) {
+    printf("matrix_keystate_changed: knum=%d %s when=%llu\n", knum, on ? "ON" : "OFF", when);
+}
+
+__attribute__((weak)) void matrix_keystate_suppressed(uint64_t when, int knum, bool on, uint64_t last, uint64_t elapsed) {
+    printf("matrix_suppressed: knum=%d %s when=%llu last=%llu elapsed=%llu\n", knum, on ? "ON" : "OFF", when, last, elapsed);
+}
+
+static void matrix_set_keystate(uint64_t now, int knum, bool on) {
+    if (on != matrix_keystates[knum].on) {
+        uint64_t last = matrix_keystates[knum].last << 1;
+        uint64_t elapsed = now - last;
+        if (elapsed >= MATRIX_DEBOUNCE_USEC) {
+            matrix_keystates[knum].on = on;
+            matrix_keystates[knum].last = now >> 1;
+            matrix_keystate_changed(now, knum, on);
+        } else {
+            matrix_keystate_suppressed(now, knum, on, last, elapsed);
         }
     }
 }
 
-__attribute__((weak)) void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
-    printf("matrix_changed: col=%d row=%d %s when=%llu\n", ncol, nrow, on ? "ON" : "OFF", when);
+static void matrix_scan_keys(uint64_t now) {
+    uint32_t scanned = 0;
+    uint32_t states[32] = {0};
+    for (int i = 0; i < KEY_COUNT; i++) {
+        uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
+        if ((scanned & (1 << p0)) == 0) {
+            gpio_set_dir(p0, GPIO_OUT);
+            sleep_us(MATRIX_ROW_SELECT_DELAY);
+            states[p0] = gpio_get_all();
+            gpio_set_dir(p0, GPIO_IN);
+            scanned |= 1 << p0;
+        }
+        bool on = (states[p0] & (1 << p1)) == 0;
+        matrix_set_keystate(now, i, on);
+    }
 }
 
-__attribute__((weak)) void matrix_suppressed(uint ncol, uint nrow, bool on, uint64_t when, uint64_t last, uint64_t elapsed) {
-    printf("matrix_suppressed: col=%d row=%d %s when=%llu last=%llu elapsed=%llu\n", ncol, nrow, on ? "ON" : "OFF", when, last, elapsed);
-}
-
-static void performance_count(uint64_t now) {
+static void matrix_performance_count(uint64_t now) {
 #ifdef MATRIX_SCAN_PERFORMANCE_COUNT
     static uint64_t count = 0;
     static uint64_t last = 0;
@@ -97,31 +93,8 @@ void matrix_task(uint64_t now) {
     }
     last = now;
 #endif
-    uint x = 0;
-    for (uint nrow = 0; nrow < ROW_NUM; nrow++) {
-        // select a row, wait a bit, fetch columns status, unselect a row.
-        uint pin = row_pins[nrow];
-        gpio_set_dir(pin, GPIO_OUT);
-        sleep_us(MATRIX_ROW_SELECT_DELAY);
-        uint32_t bits = gpio_get_all();
-        gpio_set_dir(pin, GPIO_IN);
-        // parse columns status as matrix states.
-        for (uint ncol = 0; ncol < COL_NUM; ncol++) {
-            bool on = (bits & (1ul << col_pins[ncol])) == 0;
-            if (on != matrix_states[x].on) {
-                uint64_t elapsed = now - matrix_states[x].last;
-                if (elapsed >= MATRIX_DEBOUNCE_USEC) {
-                    matrix_states[x].on = on;
-                    matrix_states[x].last = now;
-                    matrix_changed(ncol, nrow, on, now);
-                } else {
-                    matrix_suppressed(ncol, nrow, on, now, matrix_states[x].last, elapsed);
-                }
-            }
-            x++;
-        }
-    }
-    performance_count(now);
+    matrix_scan_keys(now);
+    matrix_performance_count(now);
 }
 
 // matrix_gpio_init initialize a GPIO for matrix as input dir, pull up, and
@@ -134,14 +107,19 @@ static void matrix_gpio_init(uint gpio) {
 }
 
 void matrix_init() {
-    //printf("matrix_init: sizeof(matrix_states)=%d\n", sizeof(matrix_states));
-    // setup pins of columns.
-    for (int i = 0; i < COL_NUM; i++) {
-        matrix_gpio_init(col_pins[i]);
+    //printf("matrix_init: KEY_COUNT=%d sizeof(matrix_keystates)=%d\n", KEY_COUNT, sizeof(matrix_keystates));
+
+    // setup all pins for GPIO.
+    uint32_t inited_pins = 0;
+    for (int i = 0; i < KEY_COUNT; i++) {
+        uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
+        if ((inited_pins & (1 << p0)) == 0) {
+            matrix_gpio_init(p0);
+            inited_pins |= 1 << p0;
+        }
+        if ((inited_pins & (1 << p1)) == 0) {
+            matrix_gpio_init(p1);
+            inited_pins |= 1 << p1;
+        }
     }
-    // setup pins of rows.
-    for (int i = 0; i < ROW_NUM; i++) {
-        matrix_gpio_init(row_pins[i]);
-    }
-    memset(matrix_states, 0, sizeof(matrix_states));
 }

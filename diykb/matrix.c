@@ -5,11 +5,7 @@
 #include "hardware/gpio.h"
 
 #include "config.h"
-
-#ifndef MATRIX_KEYS
-# pragma GCC error "MATRIX_KEYS should be defined in config.h"
-# define MATRIX_KEYS {}
-#endif
+#include "layout.h"
 
 #ifndef MATRIX_ROW_SELECT_DELAY
 # define MATRIX_ROW_SELECT_DELAY 1
@@ -20,8 +16,6 @@
 #ifndef MATRIX_DEBOUNCE_USEC
 # define MATRIX_DEBOUNCE_USEC      (10*1000)
 #endif
-
-static const uint8_t matrix_keys[KEY_NUM][2] = MATRIX_KEYS;
 
 typedef struct {
     bool     on:1;
@@ -55,8 +49,8 @@ static void matrix_set_keystate(uint64_t now, uint knum, bool on) {
 static void matrix_scan_keys(uint64_t now) {
     uint32_t scanned = 0;
     uint32_t states[32] = {0};
-    for (uint i = 0; i < KEY_NUM; i++) {
-        uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
+    for (uint i = 0; i < LAYOUT_MATRIX_MAX; i++) {
+        uint8_t p0 = layout_matrix[i][0], p1 = layout_matrix[i][1];
         if ((scanned & (1 << p0)) == 0) {
             gpio_set_dir(p0, GPIO_OUT);
             sleep_us(MATRIX_ROW_SELECT_DELAY);
@@ -105,12 +99,12 @@ static void matrix_gpio_init(uint gpio) {
 }
 
 void matrix_init() {
-    //printf("matrix_init: KEY_NUM=%d sizeof(matrix_keystates)=%d\n", KEY_NUM, sizeof(matrix_keystates));
+    printf("matrix_init: KEY_NUM=%d sizeof(matrix_keystates)=%d\n", KEY_NUM, sizeof(matrix_keystates));
 
     // setup all pins for GPIO.
     uint32_t inited_pins = 0;
-    for (uint i = 0; i < KEY_NUM; i++) {
-        uint8_t p0 = matrix_keys[i][0], p1 = matrix_keys[i][1];
+    for (uint i = 0; i < LAYOUT_MATRIX_MAX; i++) {
+        uint8_t p0 = layout_matrix[i][0], p1 = layout_matrix[i][1];
         if ((inited_pins & (1 << p0)) == 0) {
             matrix_gpio_init(p0);
             inited_pins |= 1 << p0;

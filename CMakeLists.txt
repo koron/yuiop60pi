@@ -17,6 +17,7 @@ pico_sdk_init()
 
 add_executable(yuiop60pi
 	main.c
+	layout.c
 	keymap.c
 	diykb/usb_descriptors.c
 	diykb/matrix.c

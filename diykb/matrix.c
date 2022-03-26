@@ -99,7 +99,7 @@ static void matrix_gpio_init(uint gpio) {
 }
 
 void matrix_init() {
-    printf("matrix_init: KEY_NUM=%d sizeof(matrix_keystates)=%d\n", KEY_NUM, sizeof(matrix_keystates));
+    //printf("matrix_init: KEY_NUM=%d sizeof(matrix_keystates)=%d\n", KEY_NUM, sizeof(matrix_keystates));
 
     // setup all pins for GPIO.
     uint32_t inited_pins = 0;

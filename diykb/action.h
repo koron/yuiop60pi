@@ -4,8 +4,7 @@
 // Functions
 
 typedef struct {
-    uint col;
-    uint row;
+    uint knum;
     bool on;
     keycode_t kc;
 } action_event_t;

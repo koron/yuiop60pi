@@ -17,20 +17,18 @@ typedef struct {
     uint64_t  when;
 } key_state_t;
 
-static key_state_t kbd_states[COL_NUM * ROW_NUM];
+static key_state_t kbd_states[KEY_NUM];
 
-void matrix_changed(uint ncol, uint nrow, bool on, uint64_t when) {
-    int index = ncol + nrow * COL_NUM;
-    keycode_t code = on ? layer_get_keycode(ncol, nrow) : kbd_states[index].code;
+void matrix_changed(uint64_t when, uint knum, bool on) {
+    keycode_t code = on ? layer_get_keycode(knum) : kbd_states[knum].code;
     action_event_t ev = {
-        .col = ncol,
-        .row = nrow,
+        .knum = knum,
         .on = on,
         .kc = code,
     };
     action_perform(when, &ev);
-    kbd_states[index].code = code;
-    kbd_states[index].when = when;
+    kbd_states[knum].code = code;
+    kbd_states[knum].when = when;
 }
 
 //////////////////////////////////////////////////////////////////////////////

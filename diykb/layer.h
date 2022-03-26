@@ -12,8 +12,7 @@ void layer_set_disable(int layer);
 void layer_set(int layer, bool enable);
 void layer_toggle(int layer);
 
-keycode_t layer_get_keycode(uint ncol, uint nrow);
-uint8_t layer_get_code(uint ncol, uint nrow, bool on);
+keycode_t layer_get_keycode(uint knum);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,7 @@ typedef struct {
     uint64_t  when;
 } key_state_t;
 
-static key_state_t kbd_states[KEY_NUM];
+static key_state_t kbd_states[KEY_NUM] = {0};
 
 void matrix_changed(uint64_t when, uint knum, bool on) {
     keycode_t code = on ? layer_get_keycode(knum) : kbd_states[knum].code;
@@ -201,7 +201,6 @@ static action_handler_t kbd_actions[] = {
 };
 
 void kbd_init() {
-    memset(kbd_states, 0, sizeof(kbd_states));
     for (int i = 0; i < count_of(kbd_actions); i++) {
         action_add_handler(&kbd_actions[i]);
     }

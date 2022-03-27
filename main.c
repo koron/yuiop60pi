@@ -6,9 +6,10 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "backlight.h"
-#include "matrix.h"
 #include "kbd.h"
+#include "matrix.h"
+
+#include "backlight.h"
 #include "ledarray.h"
 
 void kbd_indicator_changed(kbd_indicator_t v) {
@@ -39,11 +40,13 @@ int main() {
     setup_default_uart();
     printf("\nYUIOP60Pi: start\n");
 
-    ledarray_init();
-    backlight_init();
     tusb_init();
     kbd_init();
     matrix_init();
+
+    // setup RGB LED array.
+    ledarray_init();
+    backlight_init();
 
     // FIXME: register keyboard specific actions at here.
 

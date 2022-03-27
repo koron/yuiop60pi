@@ -193,8 +193,18 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 
 //////////////////////////////////////////////////////////////////////////////
 
+static action_handler_t kbd_actions[] = {
+    { .fn = action_do_no },
+    { .fn = action_do_hid },
+    { .fn = action_do_layer },
+    // FIXME: register more keyboard actions.
+};
+
 void kbd_init() {
     memset(kbd_states, 0, sizeof(kbd_states));
+    for (int i = 0; i < count_of(kbd_actions); i++) {
+        action_add_handler(&kbd_actions[i]);
+    }
 }
 
 void kbd_task(uint64_t now) {

@@ -45,6 +45,8 @@ int main() {
     kbd_init();
     matrix_init();
 
+    // FIXME: register keyboard specific actions at here.
+
     multicore_launch_core1(core1_main);
 
     while(true) {

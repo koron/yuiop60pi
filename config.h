@@ -4,7 +4,7 @@
 // for usb_descriptors.c
 
 #define VENDOR_ID       0x7890
-#define PRODUCT_ID      0x000a
+#define PRODUCT_ID      0x8001
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    koron
 #define PRODUCT         YUIOP60Pi

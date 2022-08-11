@@ -3,8 +3,8 @@
 #include "pico/stdlib.h"
 
 #include "config.h"
-#include "keycode.h"
-#include "keymap.h"
+#include "diykb/keycode.h"
+#include "diykb/keymap.h"
 
 #define LAYER_MAXNUM	31
 

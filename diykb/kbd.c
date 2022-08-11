@@ -5,10 +5,10 @@
 
 #include "config.h"
 #include "usb_descriptors.h"
-#include "keycode.h"
-#include "layer.h"
-#include "action.h"
-#include "kbd.h"
+#include "diykb/keycode.h"
+#include "diykb/layer.h"
+#include "diykb/action.h"
+#include "diykb/kbd.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@ typedef struct {
     uint64_t  when;
 } key_state_t;
 
-static key_state_t kbd_states[KEY_NUM];
+static key_state_t kbd_states[KEY_NUM] = {0};
 
 void matrix_changed(uint64_t when, uint knum, bool on) {
     keycode_t code = on ? layer_get_keycode(knum) : kbd_states[knum].code;
@@ -193,8 +193,17 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 
 //////////////////////////////////////////////////////////////////////////////
 
+static action_handler_t kbd_actions[] = {
+    { .fn = action_do_no },
+    { .fn = action_do_hid },
+    { .fn = action_do_layer },
+    // FIXME: register more keyboard actions.
+};
+
 void kbd_init() {
-    memset(kbd_states, 0, sizeof(kbd_states));
+    for (int i = 0; i < count_of(kbd_actions); i++) {
+        action_add_handler(&kbd_actions[i]);
+    }
 }
 
 void kbd_task(uint64_t now) {

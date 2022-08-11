@@ -1,6 +1,6 @@
 #include "pico/stdlib.h"
 
-#include "keycode.h"
+#include "diykb/keycode.h"
 
 bool kc_is_hid(keycode_t kc) {
     return kc >= KC_A && kc <= 0xff;

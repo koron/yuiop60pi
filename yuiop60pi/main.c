@@ -6,10 +6,10 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "backlight.h"
-#include "matrix.h"
-#include "kbd.h"
-#include "ledarray.h"
+#include "diykb/light.h"
+#include "diykb/matrix.h"
+#include "diykb/kbd.h"
+#include "diykb/ledarray.h"
 
 void kbd_indicator_changed(kbd_indicator_t v) {
     // apply lock indicators status to 1st LED.
@@ -30,7 +30,7 @@ static void core1_main(void) {
     printf("YUIOP60Pi: core1 launched\n");
     while(true) {
         uint64_t now = time_us_64();
-        backlight_task(now);
+        light_task(now);
         ledarray_task(now);
     }
 }
@@ -40,7 +40,8 @@ int main() {
     printf("\nYUIOP60Pi: start\n");
 
     ledarray_init();
-    backlight_init();
+    light_init();
+    light_set_clipping(1, LEDARRAY_NUM);
     tusb_init();
     kbd_init();
     matrix_init();

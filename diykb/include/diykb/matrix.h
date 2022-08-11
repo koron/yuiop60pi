@@ -11,9 +11,13 @@
 // When undefined, scan interval is disabled (maximum scan).
 //#define MATRIX_SCAN_INTERVAL 499
 
-// MATRIX_ROW_SELECT_DELAY is interval after a row selected on scan, in
+// MATRIX_PIN_SELECT_DELAY is interval after selected a row on scan, in
 // micro-seconds. Default is 1.
-//#define MATRIX_ROW_SELECT_DELAY 1
+//#define MATRIX_PIN_SELECT_DELAY 1
+
+// MATRIX_PIN_UNSELECT_DELAY is interval after unselected a row on scan, in
+// micro-seconds. Default is 1.
+//#define MATRIX_PIN_UNSELECT_DELAY 1
 
 // MATRIX_DEBOUNCE_USEC is inhibition interval (micro-seconds) for changing
 // status of each keys. Default is 10000 (10 millseconds)

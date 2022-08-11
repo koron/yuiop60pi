@@ -14,7 +14,7 @@
 $ make
 ```
 
-Output: `build\yuiop60pi.uf2`
+Output: `build\yuiop60pi\yuiop60pi.uf2`
 
 ## Hardware
 
@@ -34,10 +34,10 @@ Output: `build\yuiop60pi.uf2`
 
 Edit these files:
 
-* config.h - hardware information
-* keymap.c - keymap definition
-* main.c - add awesome extra features
-* CMakeLists.txt
+* yuiop60pi/config.h - hardware information
+* yuiop60pi/keymap.c - keymap definition
+* yuiop60pi/main.c - add awesome extra features
+* yuiop60pi/CMakeLists.txt
 
 ## Supported layer control special codes
 

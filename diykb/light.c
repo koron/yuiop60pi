@@ -1,12 +1,16 @@
 #include "pico/stdlib.h"
 
 #include "config.h"
-#include "ledarray.h"
+#include "diykb/ledarray.h"
+
+static bool enable = true;
+static int clip_start = 0;
+static int clip_end = LEDARRAY_NUM;
 
 static void update_rainbow(uint t) {
-    uint level = 1;
+    uint level = 0;
     //uint level = (t / LEDARRAY_NUM) % 7;
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = clip_start; i < clip_end; i++) {
         uint8_t r = 0, g = 0, b = 0;
         float h = (float)((i + t) % LEDARRAY_NUM)/ (float)LEDARRAY_NUM * 6;
         int phase = (int)h;
@@ -49,7 +53,7 @@ static void update_rainbow(uint t) {
 }
 
 static void update_snake(uint t) {
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = clip_start; i < clip_end; i++) {
         uint32_t c = 0;
         uint x = (i + t) % LEDARRAY_NUM;
         if (x < 5) {
@@ -66,7 +70,7 @@ static void update_snake(uint t) {
 
 static void update_rgb_test(uint t) {
     uint8_t r = 0, g = 0, b = 0;
-    uint8_t v = 0x08;
+    uint8_t v = 0xff;
     switch ((t / 45) % 3) {
         case 0:
             r = v;
@@ -78,7 +82,7 @@ static void update_rgb_test(uint t) {
             b = v;
             break;
     }
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = clip_start; i < clip_end; i++) {
         ledarray_set_rgb(i, r, g, b);
     }
 }
@@ -102,7 +106,7 @@ static void update_rgb_breath(uint t) {
             b = v;
             break;
     }
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = clip_start; i < clip_end; i++) {
         ledarray_set_rgb(i, r, g, b);
     }
 }
@@ -116,44 +120,12 @@ static pattern patterns[] = {
     update_rgb_breath
 };
 
-static bool enable = true;
-
 const uint pattern_choice = 1;
 
-static void rgb_test(uint64_t now) {
-    const uint8_t v = 0x10;
-    const uint64_t msec = 2000;
-
-    static uint64_t last = 0;
-    static uint8_t state = 0;
-    if (now - last < msec * 1000) {
-        return;
-    }
-    last = now;
-
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
-        uint8_t r = 0, g = 0, b = 0;
-        switch (state) {
-            case 0:
-                r = v;
-                break;
-            case 1:
-                g = v;
-                break;
-            case 2:
-                b = v;
-                break;
-        }
-        ledarray_set_rgb(i, r, g, b);
-    }
-    state = (state + 1) % 3;
-}
-
-void backlight_task(uint64_t now) {
+void light_task(uint64_t now) {
     if (!enable) {
         return;
     }
-#if 1
     static uint64_t last = 0;
     static uint32_t state = 0;
     if (now - last < 33 * 1000) {
@@ -162,22 +134,44 @@ void backlight_task(uint64_t now) {
     last = now;
     patterns[pattern_choice % count_of(patterns)](state);
     state++;
-#else
-    rgb_test(now);
-#endif
 }
 
-void backlight_init() {
+void light_init() {
     // FIXME: implement me in future.
 }
 
-void backlight_disable(void) {
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+void light_disable(void) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         ledarray_set_rgb(i, 0, 0, 0);
     }
     enable = false;
 }
 
-void backlight_enable(void) {
+void light_enable(void) {
     enable = true;
+}
+
+bool light_is_enable(void) {
+    return enable;
+}
+
+void light_set_clipping(int start, int end) {
+    if (start < 0 || start > LEDARRAY_NUM) {
+        start = 0;
+    }
+    if (end > LEDARRAY_NUM || end < start) {
+        end = LEDARRAY_NUM;
+    }
+    if (clip_start != start || clip_end != end) {
+        // turn off clipped lights
+        for (int i = 0; i < start; i++) {
+            ledarray_set_rgb(i, 0, 0, 0);
+        }
+        for (int i = end; i < LEDARRAY_NUM; i++) {
+            ledarray_set_rgb(i, 0, 0, 0);
+        }
+        // update clipping lights info
+        clip_start = start;
+        clip_end = end;
+    }
 }

@@ -5,10 +5,14 @@
 #include "hardware/gpio.h"
 
 #include "config.h"
-#include "layout.h"
+#include "diykb/layout.h"
 
-#ifndef MATRIX_ROW_SELECT_DELAY
-# define MATRIX_ROW_SELECT_DELAY 1
+#ifndef MATRIX_PIN_SELECT_DELAY
+# define MATRIX_PIN_SELECT_DELAY 1
+#endif
+
+#ifndef MATRIX_PIN_UNSELECT_DELAY
+# define MATRIX_PIN_UNSELECT_DELAY 1
 #endif
 
 // MATRIX_DEBOUNCE_USEC is inhibition interval (us) for changing status of each
@@ -53,10 +57,11 @@ static void matrix_scan_keys(uint64_t now) {
         uint8_t p0 = layout_matrix[i][0], p1 = layout_matrix[i][1];
         if ((scanned & (1 << p0)) == 0) {
             gpio_set_dir(p0, GPIO_OUT);
-            sleep_us(MATRIX_ROW_SELECT_DELAY);
+            busy_wait_us_32(MATRIX_PIN_SELECT_DELAY);
             states[p0] = gpio_get_all();
             gpio_set_dir(p0, GPIO_IN);
             scanned |= 1 << p0;
+            busy_wait_us_32(MATRIX_PIN_UNSELECT_DELAY);
         }
         bool on = (states[p0] & (1 << p1)) == 0;
         matrix_set_keystate(now, i, on);

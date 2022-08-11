@@ -1,11 +1,9 @@
-default: build/yuiop60pi.uf2
+default: build/Makefile
+	make -j8 -C build
 
+.PHONY: build/Makefile
 build/Makefile:
 	cmake -B build -DCMAKE_DEPENDS_USE_COMPILER=OFF
-
-.PHONY: build/yuiop60pi.uf2
-build/yuiop60pi.uf2: build/Makefile
-	make -j8 -C build
 
 .PHONY: clean
 clean:
@@ -19,3 +17,7 @@ distclean:
 .PHONY: tags
 tags:
 	ctags --exclude=build/* --exclude=tmp/* -R .
+
+.PHONY: yuiop60pi
+yuiop60pi: build/Makefile
+	make -j8 -C build yuiop60pi

@@ -6,7 +6,7 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "diykb/lighting.h"
+#include "diykb/light.h"
 #include "diykb/matrix.h"
 #include "diykb/kbd.h"
 #include "diykb/ledarray.h"
@@ -30,7 +30,7 @@ static void core1_main(void) {
     printf("YUIOP60Pi: core1 launched\n");
     while(true) {
         uint64_t now = time_us_64();
-        lighting_task(now);
+        light_task(now);
         ledarray_task(now);
     }
 }
@@ -40,7 +40,8 @@ int main() {
     printf("\nYUIOP60Pi: start\n");
 
     ledarray_init();
-    lighting_init();
+    light_init();
+    light_set_clipping(1, LEDARRAY_NUM);
     tusb_init();
     kbd_init();
     matrix_init();

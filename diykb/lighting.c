@@ -149,7 +149,7 @@ static void rgb_test(uint64_t now) {
     state = (state + 1) % 3;
 }
 
-void backlight_task(uint64_t now) {
+void lighting_task(uint64_t now) {
     if (!enable) {
         return;
     }
@@ -167,21 +167,21 @@ void backlight_task(uint64_t now) {
 #endif
 }
 
-void backlight_init() {
+void lighting_init() {
     // FIXME: implement me in future.
 }
 
-void backlight_disable(void) {
+void lighting_disable(void) {
     for (int i = 0; i < LEDARRAY_NUM; i++) {
         ledarray_set_rgb(i, 0, 0, 0);
     }
     enable = false;
 }
 
-void backlight_enable(void) {
+void lighting_enable(void) {
     enable = true;
 }
 
-bool backlight_is_enable(void) {
+bool lighting_is_enable(void) {
     return enable;
 }

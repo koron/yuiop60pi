@@ -4,7 +4,7 @@ target_include_directories(diykb INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
 
 target_sources(diykb INTERFACE
 	action.c
-	backlight.c
+	lighting.c
 	kbd.c
 	keycode.c
 	layer.c

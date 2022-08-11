@@ -1,5 +1,8 @@
 #include "diykb/keymap.h"
 
+#define _______ KC_TRNS
+#define XXXXXXX KC_NO
+
 const keycode_t keymaps[][KEY_NUM] = {
 
     [0] = {
@@ -11,28 +14,28 @@ const keycode_t keymaps[][KEY_NUM] = {
     },
 
     [1] = {
-      KC_NO   , KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 , KC_INS , KC_DEL ,
-      KC_CAPS     , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NLCK, KC_PSCR, KC_SLCK, KC_PAUS, KC_UP  , KC_NO  ,      KC_NO  ,
-      KC_TRNS       , KC_VOLD, KC_VOLU, KC_MUTE, KC_NO  , KC_NO  , KC_PAST, KC_PSLS, KC_HOME, KC_PGUP, KC_LEFT, KC_RGHT,             KC_NO  ,
-      KC_TRNS           , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_NO  , KC_PPLS, KC_PMNS, KC_END , KC_PGDN, KC_DOWN,         KC_TRNS, MO(2)  ,
-                   MO(2)   ,  KC_TRNS ,                         KC_NO                          ,   KC_TRNS  , KC_TRNS
+      XXXXXXX , KC_F1  , KC_F2  , KC_F3  , KC_F4  , KC_F5  , KC_F6  , KC_F7  , KC_F8  , KC_F9  , KC_F10 , KC_F11 , KC_F12 , KC_INS , KC_DEL ,
+      KC_CAPS     , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_NLCK, KC_PSCR, KC_SLCK, KC_PAUS, KC_UP  , XXXXXXX,      XXXXXXX,
+      _______       , KC_VOLD, KC_VOLU, KC_MUTE, XXXXXXX, XXXXXXX, KC_PAST, KC_PSLS, KC_HOME, KC_PGUP, KC_LEFT, KC_RGHT,             XXXXXXX,
+      _______           , XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PPLS, KC_PMNS, KC_END , KC_PGDN, KC_DOWN,         _______, MO(2)  ,
+                   MO(2)   ,  _______ ,                         XXXXXXX                        ,   _______  , _______
     },
 
     [2] = {
-      KC_TRNS , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-      KC_TRNS     , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_TRNS,
-      KC_TRNS       , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,             KC_TRNS,
-      KC_TRNS           , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,         KC_TRNS, KC_TRNS,
-                   KC_TRNS ,  KC_TRNS ,                         KC_TRNS                        ,   KC_TRNS  , KC_TRNS
+      _______ , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______     , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,      _______,
+      _______       , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,             _______,
+      _______           , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,         _______, _______,
+                   _______ ,  _______ ,                         _______                        ,   _______  , _______
     },
 
     /*
     [NEW LAYER] = {
-      KC_TRNS , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-      KC_TRNS     , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,      KC_TRNS,
-      KC_TRNS       , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,             KC_TRNS,
-      KC_TRNS           , KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,         KC_TRNS, KC_TRNS,
-                   KC_TRNS ,  KC_TRNS ,                         KC_TRNS                        ,   KC_TRNS  , KC_TRNS
+      _______ , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______     , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,      _______,
+      _______       , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,             _______,
+      _______           , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,         _______, _______,
+                   _______ ,  _______ ,                         _______                        ,   _______  , _______
     },
     */
 

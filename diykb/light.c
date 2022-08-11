@@ -3,11 +3,12 @@
 #include "config.h"
 #include "diykb/ledarray.h"
 
+static bool enable = true;
 static int clip_start = 0;
 static int clip_end = LEDARRAY_NUM;
 
 static void update_rainbow(uint t) {
-    uint level = 2;
+    uint level = 0;
     //uint level = (t / LEDARRAY_NUM) % 7;
     for (int i = clip_start; i < clip_end; i++) {
         uint8_t r = 0, g = 0, b = 0;
@@ -69,7 +70,7 @@ static void update_snake(uint t) {
 
 static void update_rgb_test(uint t) {
     uint8_t r = 0, g = 0, b = 0;
-    uint8_t v = 0x08;
+    uint8_t v = 0xff;
     switch ((t / 45) % 3) {
         case 0:
             r = v;
@@ -119,44 +120,12 @@ static pattern patterns[] = {
     update_rgb_breath
 };
 
-static bool enable = true;
-
 const uint pattern_choice = 1;
-
-static void rgb_test(uint64_t now) {
-    const uint8_t v = 0x10;
-    const uint64_t msec = 2000;
-
-    static uint64_t last = 0;
-    static uint8_t state = 0;
-    if (now - last < msec * 1000) {
-        return;
-    }
-    last = now;
-
-    for (int i = clip_start; i < clip_end; i++) {
-        uint8_t r = 0, g = 0, b = 0;
-        switch (state) {
-            case 0:
-                r = v;
-                break;
-            case 1:
-                g = v;
-                break;
-            case 2:
-                b = v;
-                break;
-        }
-        ledarray_set_rgb(i, r, g, b);
-    }
-    state = (state + 1) % 3;
-}
 
 void light_task(uint64_t now) {
     if (!enable) {
         return;
     }
-#if 1
     static uint64_t last = 0;
     static uint32_t state = 0;
     if (now - last < 33 * 1000) {
@@ -165,9 +134,6 @@ void light_task(uint64_t now) {
     last = now;
     patterns[pattern_choice % count_of(patterns)](state);
     state++;
-#else
-    rgb_test(now);
-#endif
 }
 
 void light_init() {

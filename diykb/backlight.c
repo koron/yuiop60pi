@@ -4,9 +4,9 @@
 #include "ledarray.h"
 
 static void update_rainbow(uint t) {
-    uint level = 1;
+    uint level = 2;
     //uint level = (t / LEDARRAY_NUM) % 7;
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;
         float h = (float)((i + t) % LEDARRAY_NUM)/ (float)LEDARRAY_NUM * 6;
         int phase = (int)h;
@@ -49,7 +49,7 @@ static void update_rainbow(uint t) {
 }
 
 static void update_snake(uint t) {
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         uint32_t c = 0;
         uint x = (i + t) % LEDARRAY_NUM;
         if (x < 5) {
@@ -78,7 +78,7 @@ static void update_rgb_test(uint t) {
             b = v;
             break;
     }
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         ledarray_set_rgb(i, r, g, b);
     }
 }
@@ -102,7 +102,7 @@ static void update_rgb_breath(uint t) {
             b = v;
             break;
     }
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         ledarray_set_rgb(i, r, g, b);
     }
 }
@@ -131,7 +131,7 @@ static void rgb_test(uint64_t now) {
     }
     last = now;
 
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         uint8_t r = 0, g = 0, b = 0;
         switch (state) {
             case 0:
@@ -172,7 +172,7 @@ void backlight_init() {
 }
 
 void backlight_disable(void) {
-    for (int i = 1; i < LEDARRAY_NUM; i++) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
         ledarray_set_rgb(i, 0, 0, 0);
     }
     enable = false;
@@ -180,4 +180,8 @@ void backlight_disable(void) {
 
 void backlight_enable(void) {
     enable = true;
+}
+
+bool backlight_is_enable(void) {
+    return enable;
 }

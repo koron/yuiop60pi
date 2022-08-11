@@ -14,7 +14,19 @@ __attribute__((weak)) void action_report_oneshot(uint8_t code) {
     printf("action_report_oneshot: code=%02x\n", code);
 }
 
-bool action_layer(uint64_t when, action_event_t *ev) {
+bool action_do_no(uint64_t when, action_event_t *ev) {
+    return ev->kc == KC_NO;
+}
+
+bool action_do_hid(uint64_t when, action_event_t *ev) {
+    if (!kc_is_hid(ev->kc)) {
+        return false;
+    }
+    action_report_code(ev->kc, ev->on);
+    return true;
+}
+
+bool action_do_layer(uint64_t when, action_event_t *ev) {
     uint16_t layer = 0;
     // turn on layer when pressed. (TO)
     if (kc_is_ext(ev->kc, KCX_TO, 0x1f, &layer)) {
@@ -42,18 +54,32 @@ bool action_layer(uint64_t when, action_event_t *ev) {
 
 //////////////////////////////////////////////////////////////////////////////
 
+static action_handler_t *first_handler = NULL;
+static action_handler_t **last_handler = NULL;
+
+void action_add_handler(action_handler_t *h) {
+    if (h == NULL) {
+        return;
+    }
+    h->next = NULL;
+    if (first_handler == NULL) {
+        first_handler = h;
+        last_handler = &first_handler->next;
+    } else {
+        *last_handler = h;
+        last_handler = &(*last_handler)->next;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 void action_perform(uint64_t when, action_event_t *ev) {
-    if (ev->kc == KC_NO) {
-        return;
+    //printf("action_perform: when=%llu knum=%d %s kc=%04x\n", when, ev->knum, ev->on ? "ON" : "OFF", ev->kc);
+    int n = 0;
+    for (action_handler_t *h = first_handler; h != NULL; h = h->next, n++) {
+        if (h->fn(when, ev)) {
+            //printf("action_perform: did action#%d\n", n);
+            return;
+        }
     }
-    //printf("action_perform: when=%llu col=%d row=%d %s kc=%04x\n", when, ev->col, ev->row, ev->on ? "ON" : "OFF", ev->kc);
-    if (kc_is_hid(ev->kc)) {
-        action_report_code(ev->kc, ev->on);
-        return;
-    }
-    if (action_layer(when, ev)) {
-        return;
-    }
-    // no actions mapped.
-    // FIXME: add more actions.
 }

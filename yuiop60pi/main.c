@@ -6,10 +6,10 @@
 #include "tusb.h"
 
 #include "config.h"
-#include "backlight.h"
-#include "matrix.h"
-#include "kbd.h"
-#include "ledarray.h"
+#include "diykb/backlight.h"
+#include "diykb/matrix.h"
+#include "diykb/kbd.h"
+#include "diykb/ledarray.h"
 
 void kbd_indicator_changed(kbd_indicator_t v) {
     // apply lock indicators status to 1st LED.

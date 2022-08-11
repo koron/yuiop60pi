@@ -1,4 +1,4 @@
-#include "keymap.h"
+#include "diykb/keymap.h"
 
 const keycode_t keymaps[][KEY_NUM] = {
 

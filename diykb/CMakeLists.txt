@@ -1,6 +1,6 @@
 add_library(diykb INTERFACE)
 
-target_include_directories(diykb INTERFACE .)
+target_include_directories(diykb INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
 
 target_sources(diykb INTERFACE
 	action.c

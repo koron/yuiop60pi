@@ -2,9 +2,9 @@
 
 #include "pico/stdlib.h"
 
-#include "keycode.h"
-#include "layer.h"
-#include "action.h"
+#include "diykb/keycode.h"
+#include "diykb/layer.h"
+#include "diykb/action.h"
 
 __attribute__((weak)) void action_report_code(uint8_t code, bool on) {
     printf("action_report_code: code=%02x on=%d\n", code, on);

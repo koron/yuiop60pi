@@ -1,7 +1,7 @@
 #include "pico/stdlib.h"
 
 #include "config.h"
-#include "ledarray.h"
+#include "diykb/ledarray.h"
 
 static void update_rainbow(uint t) {
     uint level = 2;

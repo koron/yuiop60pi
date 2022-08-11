@@ -5,7 +5,7 @@
 #include "hardware/gpio.h"
 
 #include "config.h"
-#include "layout.h"
+#include "diykb/layout.h"
 
 #ifndef MATRIX_PIN_SELECT_DELAY
 # define MATRIX_PIN_SELECT_DELAY 1

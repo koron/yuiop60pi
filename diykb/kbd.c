@@ -5,10 +5,10 @@
 
 #include "config.h"
 #include "usb_descriptors.h"
-#include "keycode.h"
-#include "layer.h"
-#include "action.h"
-#include "kbd.h"
+#include "diykb/keycode.h"
+#include "diykb/layer.h"
+#include "diykb/action.h"
+#include "diykb/kbd.h"
 
 //////////////////////////////////////////////////////////////////////////////
 

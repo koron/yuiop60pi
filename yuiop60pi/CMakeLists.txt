@@ -9,7 +9,7 @@ pico_set_program_version(yuiop60pi "0.3")
 pico_enable_stdio_uart(yuiop60pi 1)
 pico_enable_stdio_usb(yuiop60pi 0)
 
-target_include_directories(yuiop60pi PUBLIC .)
+target_include_directories(yuiop60pi PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 target_link_libraries(yuiop60pi
 	diykb

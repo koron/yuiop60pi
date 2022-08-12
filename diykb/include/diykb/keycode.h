@@ -296,13 +296,23 @@ enum {
     KCX_TO           = 0x8100,
     KCX_MOMENTARY    = 0x8200,
     KCX_TOGGLE_LAYER = 0x8300,
+    KCX_LIGHT        = 0x8400,
 };
 
 #define KCX(c, m, x)    ((c) | ((x) & (m)))
 
+// layer.c
 #define TO(x)           KCX(KCX_TO,           0x1f, (x))
 #define MO(x)           KCX(KCX_MOMENTARY,    0x1f, (x))
 #define TG(x)           KCX(KCX_TOGGLE_LAYER, 0x1f, (x))
+
+// light.c
+#define LGTX(code)      KCX(KCX_LIGHT, 0x001f, (code))
+enum {
+    LGT_TOG = LGTX(0x0001),
+    LGT_PAI = LGTX(0x0002),
+    LGT_PAD = LGTX(0x0003),
+};
 
 //////////////////////////////////////////////////////////////////////////////
 // Functions

@@ -9,6 +9,7 @@
 #include "diykb/layer.h"
 #include "diykb/action.h"
 #include "diykb/kbd.h"
+#include "diykb/light.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -197,6 +198,7 @@ static action_handler_t kbd_actions[] = {
     { .fn = action_do_no },
     { .fn = action_do_hid },
     { .fn = action_do_layer },
+    { .fn = light_do_action }, // light action
     // FIXME: register more keyboard actions.
 };
 

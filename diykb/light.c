@@ -2,10 +2,15 @@
 
 #include "config.h"
 #include "diykb/ledarray.h"
+#include "diykb/light.h"
 
 static bool enable = true;
 static int clip_start = 0;
 static int clip_end = LEDARRAY_NUM;
+static int pattern_choice = 0;
+
+//////////////////////////////////////////////////////////////////////////////
+// Lighting patter definitions.
 
 static void update_rainbow(uint t) {
     uint level = 0;
@@ -111,16 +116,21 @@ static void update_rgb_breath(uint t) {
     }
 }
 
-typedef void (*pattern)(uint t);
+typedef void (*pattern_func)(uint t);
 
-static pattern patterns[] = {
-    update_snake,
+static pattern_func patterns[] = {
     update_rainbow,
+    update_snake,
+    update_rgb_breath,
     update_rgb_test,
-    update_rgb_breath
 };
 
-const uint pattern_choice = 1;
+//////////////////////////////////////////////////////////////////////////////
+// Lighting management API.
+
+void light_init() {
+    // FIXME: implement me in future.
+}
 
 void light_task(uint64_t now) {
     if (!enable) {
@@ -132,28 +142,40 @@ void light_task(uint64_t now) {
         return;
     }
     last = now;
-    patterns[pattern_choice % count_of(patterns)](state);
+    patterns[pattern_choice](state);
     state++;
 }
 
-void light_init() {
-    // FIXME: implement me in future.
-}
-
-void light_disable(void) {
-    for (int i = 0; i < LEDARRAY_NUM; i++) {
-        ledarray_set_rgb(i, 0, 0, 0);
+bool light_do_action(uint64_t when, action_event_t *ev) {
+    switch (ev->kc) {
+        case LGT_TOG:
+            if (ev->on) {
+                if (light_is_enable()) {
+                    light_disable();
+                } else {
+                    light_enable();
+                }
+                return true;
+            }
+            break;
+        case LGT_PAI:
+            if (ev->on && enable) {
+                pattern_choice = (pattern_choice + 1) % count_of(patterns);
+                return true;
+            }
+            break;
+        case LGT_PAD:
+            if (ev->on && enable) {
+                pattern_choice = (pattern_choice + count_of(patterns) - 1) % count_of(patterns);
+                return true;
+            }
+            break;
     }
-    enable = false;
+    return false;
 }
 
-void light_enable(void) {
-    enable = true;
-}
-
-bool light_is_enable(void) {
-    return enable;
-}
+//////////////////////////////////////////////////////////////////////////////
+// Lighting API
 
 void light_set_clipping(int start, int end) {
     if (start < 0 || start > LEDARRAY_NUM) {
@@ -174,4 +196,31 @@ void light_set_clipping(int start, int end) {
         clip_start = start;
         clip_end = end;
     }
+}
+
+void light_disable(void) {
+    for (int i = 0; i < LEDARRAY_NUM; i++) {
+        ledarray_set_rgb(i, 0, 0, 0);
+    }
+    enable = false;
+}
+
+void light_enable(void) {
+    enable = true;
+}
+
+bool light_is_enable(void) {
+    return enable;
+}
+
+int light_get_pattern_max(void) {
+    return count_of(patterns);
+}
+
+int light_get_pattern(void) {
+    return pattern_choice;
+}
+
+void light_set_pattern(int pattern) {
+    pattern_choice = MIN(MAX(pattern, count_of(patterns) - 1), 0);
 }

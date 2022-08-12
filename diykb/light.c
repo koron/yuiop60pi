@@ -133,6 +133,13 @@ void light_init() {
 }
 
 void light_task(uint64_t now) {
+    static bool last_enable = false;
+    if (last_enable && !enable) {
+        for (int i = clip_start; i < clip_end; i++) {
+            ledarray_set_rgb(i, 0, 0, 0);
+        }
+    }
+    last_enable = enable;
     if (!enable) {
         return;
     }
@@ -150,11 +157,7 @@ bool light_do_action(uint64_t when, action_event_t *ev) {
     switch (ev->kc) {
         case LGT_TOG:
             if (ev->on) {
-                if (light_is_enable()) {
-                    light_disable();
-                } else {
-                    light_enable();
-                }
+                enable = !enable;
                 return true;
             }
             break;
@@ -199,9 +202,6 @@ void light_set_clipping(int start, int end) {
 }
 
 void light_disable(void) {
-    for (int i = 0; i < LEDARRAY_NUM; i++) {
-        ledarray_set_rgb(i, 0, 0, 0);
-    }
     enable = false;
 }
 

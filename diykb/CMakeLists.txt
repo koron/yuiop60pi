@@ -20,5 +20,5 @@ target_link_libraries(diykb INTERFACE
 	hardware_pio
 	hardware_timer
 	tinyusb_device
-	tinyusb_board
+	#tinyusb_board
 	)

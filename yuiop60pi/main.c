@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "pico/binary_info.h"
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 #include "bsp/board.h"
@@ -10,6 +11,12 @@
 #include "diykb/matrix.h"
 #include "diykb/kbd.h"
 #include "diykb/ledarray.h"
+
+bi_decl(bi_program_feature("USB Keyboard"));
+bi_decl(bi_program_feature("NeoPixel LED array"));
+bi_decl(bi_pin_mask_with_name(0x000001f0, "Row pins (IN)"));
+bi_decl(bi_pin_mask_with_name(0x01fffc00, "Column pins (OUT)"));
+bi_decl(bi_1pin_with_name(LEDARRAY_PIN, "WS2812C-2020 x56"));
 
 void kbd_indicator_changed(kbd_indicator_t v) {
     // apply lock indicators status to 1st LED.

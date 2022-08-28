@@ -4,7 +4,6 @@ add_executable(yuiop60pi layout.c main.c keymap.c)
 #set_property(TARGET yuiop60pi PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 pico_set_program_name(yuiop60pi "yuiop60pi")
-pico_set_program_version(yuiop60pi "0.4.0-alpha.2")
 pico_set_program_url(yuiop60pi "https://github.com/koron/yuiop60pi")
 pico_set_program_description(yuiop60pi "DIY keyboard with PGA2040 firmware")
 

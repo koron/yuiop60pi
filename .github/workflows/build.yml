@@ -1,0 +1,38 @@
+name: Build
+
+on: [ push ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      PICO_SDK_PATH: ${{ github.workspace }}/__pico-sdk__
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Checkout pico-sdk
+      uses: actions/checkout@v3
+      with:
+        repository: raspberrypi/pico-sdk
+        ref: '1.4.0'
+        path: __pico-sdk__
+        submodules: true
+
+    - name: Install ARM toolchains
+      run: |
+        sudo apt update
+        sudo apt install -y cmake gcc-arm-none-eabi gcc g++
+
+    - run: make
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: yuiop60pi-firmware
+        path: |
+          build/yuiop60pi/yuiop60pi.uf2
+          build/yuiop60pi/yuiop60pi.dis
+          build/yuiop60pi/yuiop60pi.elf.map

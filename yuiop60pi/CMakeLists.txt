@@ -17,6 +17,8 @@ target_link_libraries(yuiop60pi
 	pico_time
 	pico_multicore
 	pico_binary_info
+	tinyusb_device
+	tinyusb_board
 	)
 
 pico_add_extra_outputs(yuiop60pi)

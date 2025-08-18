@@ -12,10 +12,10 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Checkout pico-sdk
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: raspberrypi/pico-sdk
         ref: '2.0.0'

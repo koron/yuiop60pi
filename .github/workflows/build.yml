@@ -6,19 +6,19 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       PICO_SDK_PATH: ${{ github.workspace }}/__pico-sdk__
 
     steps:
 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Checkout pico-sdk
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: raspberrypi/pico-sdk
-        ref: '2.0.0'
+        ref: '2.1.1'
         path: __pico-sdk__
         submodules: true
 
@@ -29,10 +29,11 @@ jobs:
 
     - run: make
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
-        name: yuiop60pi-firmware
+        name: firmwares
         path: |
-          build/yuiop60pi/yuiop60pi.uf2
-          build/yuiop60pi/yuiop60pi.dis
-          build/yuiop60pi/yuiop60pi.elf.map
+          build/*/*.uf2
+          build/*/*.dis
+          build/*/*.elf
+          build/*/*.elf.map

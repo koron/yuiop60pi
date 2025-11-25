@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# A script to program a new firmware to RP2040 via RaspberryPi debug probe.
+#
+# USAGE: program {ELF FILE}
+
+set -eu
+
+if [ $# -lt 1 ] ; then
+  echo "USAGE: $0 {ELF}"
+  exit 1
+fi
+
+ELF_FILE="$1" ; shift
+if [ ! -r "${ELF_FILE}" ] ; then
+  echo "file not found: ${ELF_FILE}"
+  exit 2
+fi
+
+_OPENOCD="${OPENOCD:-openocd}"
+
+${_OPENOCD} \
+  -f interface/cmsis-dap.cfg \
+  -f target/rp2040.cfg \
+  -c "adapter speed 5000" \
+  -c "program ${ELF_FILE} verify reset exit"

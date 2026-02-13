@@ -2,11 +2,24 @@ name: Build
 
 on: [ push ]
 
+env:
+  PICOSDK_VERSION: '2.2.0'
+
+  PICOSDKTOOLS_VERSION: 'v2.2.0-3'
+  PICOTOOL_ARCHIVE_FILE: 'picotool-2.2.0-a4-x86_64-lin.tar.gz'
+
 jobs:
 
   build:
     name: Build
+
+    strategy:
+      matrix:
+        pico_platform:
+        - rp2040
+
     runs-on: ubuntu-24.04
+
     env:
       PICO_SDK_PATH: ${{ github.workspace }}/__pico-sdk__
 
@@ -18,22 +31,38 @@ jobs:
       uses: actions/checkout@v6
       with:
         repository: raspberrypi/pico-sdk
-        ref: '2.1.1'
+        ref: ${{ env.PICOSDK_VERSION }}
         path: __pico-sdk__
         submodules: true
 
-    - name: Install ARM toolchains
+    - name: Install tools from pico-sdk-tools
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        mkdir __picotool__
+        cd __picotool__
+        gh release download ${{ env.PICOSDKTOOLS_VERSION }} -R raspberrypi/pico-sdk-tools -p ${{ env.PICOTOOL_ARCHIVE_FILE }}
+        tar xf ${{ env.PICOTOOL_ARCHIVE_FILE }}
+
+    - name: Install packages
       run: |
         sudo apt update
-        sudo apt install -y cmake gcc-arm-none-eabi gcc g++
+        sudo apt install -y cmake ninja-build gcc-arm-none-eabi gcc g++
 
-    - run: make
+    - name: Configure the build
+      run: |
+        cmake -B build -G Ninja \
+          -Dpicotool_DIR=${{ github.workspace }}/__picotool__/picotool
+
+    - name: Build
+      run: |
+        cmake --build build
 
     - uses: actions/upload-artifact@v6
       with:
-        name: firmwares
+        name: firmwares-${{ matrix.pico_platform }}
         path: |
-          build/*/*.uf2
-          build/*/*.dis
-          build/*/*.elf
-          build/*/*.elf.map
+          build/**/*.dis
+          build/**/*.elf
+          build/**/*.elf.map
+          build/**/*.uf2

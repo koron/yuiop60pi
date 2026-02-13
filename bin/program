@@ -1,26 +1,62 @@
 #!/bin/bash
 #
-# A script to program a new firmware to RP2040 via RaspberryPi debug probe.
+# A script to program a new firmware to RP2040/RP2350 via RaspberryPi debug
+# probe.
 #
 # USAGE: program {ELF FILE}
 
 set -eu
 
-if [ $# -lt 1 ] ; then
-  echo "USAGE: $0 {ELF}"
+show_help() {
+  cat << __END__
+Usage: $0 [OPTIONS] {ELF}
+
+OPTIONS:
+
+    -s {serial}   Interface serial number
+    -h            Show this message
+__END__
+}
+
+serial=
+
+while getopts s:h OPT ; do
+  case $OPT in
+    s) serial="$OPTARG" ;;
+    h) show_help && exit 0 ;;
+    *) show_help && exit 1 ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
+if [[ $# -lt 1 ]] ; then
+  show_help
+  echo -e "\nERROR: specify an ELF file"
   exit 1
 fi
 
 ELF_FILE="$1" ; shift
-if [ ! -r "${ELF_FILE}" ] ; then
+if [[ ! -r "${ELF_FILE}" ]] ; then
   echo "file not found: ${ELF_FILE}"
   exit 2
 fi
 
+# Determine target chip
+target=$(picotool info ${ELF_FILE} | grep 'target chip:' | awk '{print $3}')
+if [[ -z "$target" ]] ; then
+  target=RP2040
+fi
+target="${target,,}"
+
 _OPENOCD="${OPENOCD:-openocd}"
 
-${_OPENOCD} \
-  -f interface/cmsis-dap.cfg \
-  -f target/rp2040.cfg \
-  -c "adapter speed 5000" \
-  -c "program ${ELF_FILE} verify reset exit"
+options=()
+options+=("-f" "interface/cmsis-dap.cfg")
+options+=("-f" "target/${target}.cfg")
+if [[ ! -z "$serial" ]] ; then
+  options+=("-c" "adapter serial $serial")
+fi
+options+=("-c" "adapter speed 5000")
+options+=("-c" "program ${ELF_FILE} verify reset exit")
+
+${_OPENOCD} "${options[@]}"

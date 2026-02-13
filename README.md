@@ -1,12 +1,17 @@
 # YUIOP60Pi - DIY keyboard with PGA2040 firmware
 
+[![Build](https://github.com/koron/yuiop60pi/actions/workflows/build.yml/badge.svg)](https://github.com/koron/yuiop60pi/actions/workflows/build.yml)
+
 ## Requirements
 
-* [PICO SDK][picosdk] (v1.4.0)
+* [PICO SDK][picosdk] (v2.2.0)
   * cmake
+  * ninja
   * compiler or so
+*   [picotool][picotool]
 
 [picosdk]:https://github.com/raspberrypi/pico-sdk
+[picotool]:https://github.com/raspberrypi/picotool
 
 ## How to build
 
@@ -14,7 +19,7 @@
 $ make
 ```
 
-Output: `build\yuiop60pi\yuiop60pi.uf2`
+Output: `build/rp2040/yuiop60pi/yuiop60pi.uf2`
 
 ## Hardware
 
@@ -28,7 +33,7 @@ Output: `build\yuiop60pi\yuiop60pi.uf2`
     * Number: 1 + 55
 * Schematics: <https://github.com/koron/yuiop/tree/master/yuiop60pi>
 
-[ws2812c]:https://akizukidenshi.com/catalog/g/gI-15068/
+[ws2812c]:https://akizukidenshi.com/catalog/g/g115068/
 
 ## How to modify for your own keyborads
 

@@ -1,14 +1,10 @@
 PICO_PLATFORM=rp2040
 
-ifeq ($(PICO_PLATFORM),rp2040)
-	BUILD_DIR=build
-else
-	BUILD_DIR=build/$(PICO_PLATFORM)
-endif
+BUILD_DIR=build/$(PICO_PLATFORM)
 
 .PHONY: build
 build:
-	cmake -B $(BUILD_DIR)
+	cmake -B $(BUILD_DIR) -G Ninja
 	cmake --build $(BUILD_DIR)
 
 .PHONY: clean

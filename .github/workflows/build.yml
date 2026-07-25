@@ -25,10 +25,10 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Checkout pico-sdk
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: raspberrypi/pico-sdk
         ref: ${{ env.PICOSDK_VERSION }}
